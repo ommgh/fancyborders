@@ -1,0 +1,256 @@
+/*
+ * Frame primitive.
+ *
+ * A frame is a positioned box plus any number of decoration layers:
+ *   .fb-border   a real CSS border (follows the radius)
+ *   .fb-rules    four straight lines that can overshoot the corners
+ *   .fb-corners  a mark at each corner
+ *   .fb-fill     a pattern behind the content
+ *
+ * Everything is driven by custom properties, so a layer can be restyled
+ * from a prop, a utility class, or by editing the defaults below.
+ * Import this file after Tailwind so the rules land in its `components`
+ * layer and utilities can still override them.
+ */
+@layer components {
+  .fb-frame {
+    --fb-line: 1px;
+    --fb-line-color: color-mix(in oklab, currentColor 22%, transparent);
+    --fb-radius: 0px;
+    /* Painted behind hollow marks so the lines do not show through. */
+    --fb-surface: var(--background, Canvas);
+
+    position: relative;
+    isolation: isolate;
+    border-radius: var(--fb-radius);
+  }
+
+  /* ── Border ─────────────────────────────────────────────────────────── */
+
+  .fb-border {
+    position: absolute;
+    inset: calc(var(--fb-offset, 0px) * -1);
+    border: var(--fb-line) var(--fb-border-style, solid) var(--fb-line-color);
+    border-radius: var(--fb-border-radius, var(--fb-radius));
+    pointer-events: none;
+  }
+
+  /* ── Rules ──────────────────────────────────────────────────────────── */
+
+  .fb-rules {
+    --_ox: var(--fb-overshoot-x, var(--fb-overshoot, 0px));
+    --_oy: var(--fb-overshoot-y, var(--fb-overshoot, 0px));
+    --_off: var(--fb-offset, 0px);
+    --_h: linear-gradient(var(--fb-line-color), var(--fb-line-color));
+    --_v: var(--_h);
+
+    position: absolute;
+    inset: calc((var(--_oy) + var(--_off)) * -1)
+      calc((var(--_ox) + var(--_off)) * -1);
+    background:
+      var(--_h) 0 var(--_oy) / 100% var(--fb-rule-top, var(--fb-line)) no-repeat,
+      var(--_h) 0 calc(100% - var(--_oy)) / 100%
+        var(--fb-rule-bottom, var(--fb-line)) no-repeat,
+      var(--_v) var(--_ox) 0 / var(--fb-rule-left, var(--fb-line)) 100% no-repeat,
+      var(--_v) calc(100% - var(--_ox)) 0 / var(--fb-rule-right, var(--fb-line))
+        100% no-repeat;
+    pointer-events: none;
+  }
+
+  .fb-rules[data-dashed] {
+    --_dash: var(--fb-dash, 4px);
+    --_period: calc(var(--_dash) + var(--fb-gap, 4px));
+    --_h: repeating-linear-gradient(
+      90deg,
+      var(--fb-line-color) 0 var(--_dash),
+      transparent 0 var(--_period)
+    );
+    --_v: repeating-linear-gradient(
+      180deg,
+      var(--fb-line-color) 0 var(--_dash),
+      transparent 0 var(--_period)
+    );
+  }
+
+  /* ── Corners ────────────────────────────────────────────────────────── */
+
+  .fb-corners {
+    --fb-mark-size: 12px;
+
+    position: absolute;
+    inset: calc(var(--fb-offset, 0px) * -1);
+    pointer-events: none;
+  }
+
+  .fb-corners[data-mark="square"] {
+    --fb-mark-size: 7px;
+  }
+  .fb-corners[data-mark="plus"] {
+    --fb-mark-size: 11px;
+  }
+  .fb-corners[data-mark="dot"] {
+    --fb-mark-size: 5px;
+  }
+
+  .fb-mark {
+    --_shift: 0px;
+    --_line: var(--fb-mark-line, var(--fb-line));
+
+    position: absolute;
+    display: grid;
+    place-items: center;
+    box-sizing: border-box;
+    width: var(--fb-mark-size);
+    height: var(--fb-mark-size);
+    color: var(--fb-mark-color, currentColor);
+  }
+
+  /*
+   * Centred marks sit on the middle of the frame's line rather than on the
+   * box corner. Keep (mark size - line width) even and they stay pixel-crisp.
+   */
+  .fb-corners[data-align="center"] > .fb-mark {
+    --_shift: calc((var(--fb-line) - var(--fb-mark-size)) / 2);
+  }
+
+  /* Marks are drawn once, for the top-left corner, and rotated into place. */
+  .fb-mark[data-corner="tl"] {
+    top: var(--_shift);
+    left: var(--_shift);
+  }
+  .fb-mark[data-corner="tr"] {
+    top: var(--_shift);
+    right: var(--_shift);
+    rotate: 90deg;
+  }
+  .fb-mark[data-corner="br"] {
+    right: var(--_shift);
+    bottom: var(--_shift);
+    rotate: 180deg;
+  }
+  .fb-mark[data-corner="bl"] {
+    bottom: var(--_shift);
+    left: var(--_shift);
+    rotate: 270deg;
+  }
+  .fb-corners[data-rotate="false"] > .fb-mark {
+    rotate: none;
+  }
+
+  .fb-corners[data-mark="bracket"] > .fb-mark {
+    border-top: var(--_line) solid currentColor;
+    border-left: var(--_line) solid currentColor;
+    border-top-left-radius: var(--fb-mark-radius, var(--fb-radius));
+  }
+
+  .fb-corners[data-mark="square"] > .fb-mark {
+    border: var(--_line) solid currentColor;
+    background: var(--fb-surface);
+  }
+
+  .fb-corners[data-mark="plus"] > .fb-mark {
+    background:
+      linear-gradient(currentColor, currentColor) center / 100% var(--_line)
+        no-repeat,
+      linear-gradient(currentColor, currentColor) center / var(--_line) 100%
+        no-repeat;
+  }
+
+  .fb-corners[data-mark="dot"] > .fb-mark {
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  /* ── Fill ───────────────────────────────────────────────────────────── */
+
+  .fb-fill {
+    --_color: var(--fb-fill-color, var(--fb-line-color));
+    --_size: var(--fb-fill-size, 6px);
+    --_line: var(--fb-fill-line, 1px);
+
+    position: absolute;
+    inset: var(--fb-fill-inset, 0px);
+    z-index: -1;
+    border-radius: var(--fb-radius);
+    pointer-events: none;
+  }
+
+  .fb-fill[data-pattern="hatch"] {
+    background: repeating-linear-gradient(
+      var(--fb-fill-angle, 135deg),
+      var(--_color) 0 var(--_line),
+      transparent 0 var(--_size)
+    );
+  }
+
+  .fb-fill[data-pattern="cross"] {
+    background:
+      repeating-linear-gradient(
+        45deg,
+        var(--_color) 0 var(--_line),
+        transparent 0 var(--_size)
+      ),
+      repeating-linear-gradient(
+        135deg,
+        var(--_color) 0 var(--_line),
+        transparent 0 var(--_size)
+      );
+  }
+
+  .fb-fill[data-pattern="dots"] {
+    background: radial-gradient(
+        circle at center,
+        var(--_color) var(--_line),
+        transparent calc(var(--_line) + 0.5px)
+      )
+      0 0 / var(--_size) var(--_size);
+  }
+
+  /* Lines close each cell rather than open it, so none sits under a border
+     on the top and left edges. */
+  .fb-fill[data-pattern="grid"] {
+    --_cell: transparent calc(100% - var(--_line)), var(--_color) 0;
+
+    background:
+      linear-gradient(var(--_cell)) 0 0 / var(--_size) var(--_size),
+      linear-gradient(90deg, var(--_cell)) 0 0 / var(--_size) var(--_size);
+  }
+}
+
+/*
+ * Tailwind utilities for the frame tokens. Put them on a frame, or on any
+ * ancestor, to restyle every layer inside it:
+ *
+ *   <Frame className="frame-color-sky-500/40 frame-line-2 frame-radius-xl">
+ */
+@utility frame-line-* {
+  --fb-line: calc(--value(integer) * 1px);
+}
+
+@utility frame-radius-* {
+  --fb-radius: --value(--radius-*, [length]);
+}
+
+@utility frame-color-* {
+  --fb-line-color: color-mix(
+    in oklab,
+    --value(--color-*, [color]) calc(--modifier(integer, --default(100)) * 1%),
+    transparent
+  );
+}
+
+@utility frame-mark-* {
+  --fb-mark-color: --value(--color-*, [color]);
+}
+
+@utility frame-fill-* {
+  --fb-fill-color: color-mix(
+    in oklab,
+    --value(--color-*, [color]) calc(--modifier(integer, --default(100)) * 1%),
+    transparent
+  );
+}
+
+@utility frame-surface-* {
+  --fb-surface: --value(--color-*, [color]);
+}

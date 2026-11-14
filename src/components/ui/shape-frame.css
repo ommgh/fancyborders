@@ -1,0 +1,65 @@
+/*
+ * Shape frame.
+ *
+ * The outline is drawn the same way in every browser: a stroke layer and a
+ * surface layer, each cut to a path with clip-path. Where `border-shape` is
+ * supported the frame itself also takes the path, so its focus outline,
+ * box-shadow and hit area follow the shape instead of the rectangle.
+ */
+@layer components {
+  .fb-shape-surface,
+  .fb-shape-stroke {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .fb-shape-surface {
+    z-index: -2;
+    background: var(--fb-shape-bg, transparent);
+  }
+
+  /* Last resort for browsers that cannot clip to the path: a plain border. */
+  .fb-shape-stroke {
+    border: var(--fb-line) solid var(--fb-line-color);
+  }
+
+  .fb-shape[data-path="polygon"] > .fb-shape-surface,
+  .fb-shape[data-path="polygon"] > .fb-fill {
+    clip-path: var(--fb-shape-outer);
+  }
+
+  .fb-shape[data-path="polygon"] > .fb-shape-stroke {
+    border: 0;
+    background: var(--fb-line-color);
+    clip-path: var(--fb-shape-ring);
+  }
+
+  /* Curved paths need shape(), which is newer than polygon(). */
+  @supports (clip-path: shape(from 0 0, line to 1px 1px, close)) {
+    .fb-shape[data-path="shape"] > .fb-shape-surface,
+    .fb-shape[data-path="shape"] > .fb-fill {
+      clip-path: var(--fb-shape-outer);
+    }
+
+    .fb-shape[data-path="shape"] > .fb-shape-stroke {
+      border: 0;
+      background: var(--fb-line-color);
+      clip-path: var(--fb-shape-ring);
+    }
+  }
+
+  @supports (border-shape: inset(0)) {
+    .fb-shape {
+      border-shape: var(--fb-shape-outer);
+    }
+  }
+}
+
+@utility frame-bg-* {
+  --fb-shape-bg: color-mix(
+    in oklab,
+    --value(--color-*, [color]) calc(--modifier(integer, --default(100)) * 1%),
+    transparent
+  );
+}
