@@ -8,6 +8,19 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /* Syntax colours, shared by server-highlighted code and the playground. */
+  --code-foreground: #24292f;
+  --code-background: transparent;
+  --code-token-keyword: #cf222e;
+  --code-token-string: #0a3069;
+  --code-token-string-expression: #0a3069;
+  --code-token-comment: #6e7781;
+  --code-token-constant: #0550ae;
+  --code-token-function: #8250df;
+  --code-token-parameter: #24292f;
+  --code-token-punctuation: #57606a;
+  --code-token-link: #0550ae;
 }
 
 @theme inline {
@@ -21,11 +34,74 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+
+    --code-foreground: #e6edf3;
+    --code-token-keyword: #ff7b72;
+    --code-token-string: #a5d6ff;
+    --code-token-string-expression: #a5d6ff;
+    --code-token-comment: #8b949e;
+    --code-token-constant: #79c0ff;
+    --code-token-function: #d2a8ff;
+    --code-token-parameter: #e6edf3;
+    --code-token-punctuation: #8b949e;
+    --code-token-link: #79c0ff;
   }
+}
+
+html {
+  scroll-padding-top: 5rem;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+/* ── Site chrome ───────────────────────────────────────────────────────── */
+
+@layer components {
+  /* Code, whether highlighted on the server or written by the playground. */
+  .site-code pre {
+    margin: 0;
+    padding: 1rem;
+    overflow-x: auto;
+    font-family: var(--font-geist-mono), ui-monospace, monospace;
+    font-size: 0.8125rem;
+    line-height: 1.7;
+    tab-size: 2;
+    color: var(--code-foreground);
+    background: transparent;
+    outline: none;
+  }
+
+  .site-code code {
+    font-family: inherit;
+  }
+
+  /* The landing page's wall of previews: two copies of a column scroll up
+     by one copy's height, then start again unseen. */
+  .site-wall-column {
+    animation: site-wall var(--wall-time, 60s) linear infinite;
+  }
+
+  .site-wall-column[data-reverse] {
+    animation-direction: reverse;
+  }
+
+  .site-wall:hover .site-wall-column {
+    animation-play-state: paused;
+  }
+
+  @keyframes site-wall {
+    to {
+      transform: translateY(-50%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .site-wall-column {
+      animation: none;
+    }
+  }
 }

@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+
+import { SiteHeader } from "@/components/site/site-header";
+import { SITE_NAME, SITE_TAGLINE, SITE_URL } from "@/lib/site";
+
 import "./globals.css";
 
 const geistSans = Geist({
@@ -12,9 +16,21 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const description =
+  "Copy-paste borders, frames and effects for React and Tailwind CSS: structural frames, shaped outlines, line styles, glow, beams and liquid metal. Free, open source, installed with the shadcn CLI.";
+
 export const metadata: Metadata = {
-  title: "fancyborders",
-  description: "Frames, borders and enclosures for the web.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: `${SITE_NAME}: ${SITE_TAGLINE}`,
+    template: `%s · ${SITE_NAME}`,
+  },
+  description,
+  openGraph: {
+    siteName: SITE_NAME,
+    type: "website",
+    description,
+  },
 };
 
 export default function RootLayout({
@@ -27,7 +43,10 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">
+        <SiteHeader />
+        {children}
+      </body>
     </html>
   );
 }

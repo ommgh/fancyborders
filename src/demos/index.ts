@@ -1,0 +1,29 @@
+import type { ComponentType } from "react";
+
+import BeamShape from "./beam-shape";
+import BeamUtilities from "./beam-utilities";
+import DividerRails from "./divider-rails";
+import FrameCustomMark from "./frame-custom-mark";
+import FrameTokens from "./frame-tokens";
+import GlowShape from "./glow-shape";
+import GradientComet from "./gradient-comet";
+import GradientUtilities from "./gradient-utilities";
+import ShapeMixed from "./shape-mixed";
+import ShapeVariants from "./shape-variants";
+
+/**
+ * Static examples, by file name. A page shows the example running and, read
+ * from the same file, its source.
+ */
+export const DEMOS: Record<string, ComponentType> = {
+  "beam-shape": BeamShape,
+  "beam-utilities": BeamUtilities,
+  "divider-rails": DividerRails,
+  "frame-custom-mark": FrameCustomMark,
+  "frame-tokens": FrameTokens,
+  "glow-shape": GlowShape,
+  "gradient-comet": GradientComet,
+  "gradient-utilities": GradientUtilities,
+  "shape-mixed": ShapeMixed,
+  "shape-variants": ShapeVariants,
+};

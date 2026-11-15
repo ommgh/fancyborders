@@ -1,0 +1,96 @@
+[
+  {
+    "name": "frame",
+    "type": "registry:ui",
+    "title": "Frame",
+    "description": "The frame primitive: an enclosure plus composable border, rule, corner-mark and fill layers.",
+    "files": ["src/components/ui/frame.tsx"],
+    "css": "src/components/ui/frame.css",
+    "categories": ["primitives"]
+  },
+  {
+    "name": "shape-frame",
+    "type": "registry:ui",
+    "title": "Shape Frame",
+    "description": "A frame whose outline follows a shape: bevelled, notched, scooped or rounded corners and punched edges.",
+    "requires": ["frame"],
+    "files": ["src/components/ui/shape-frame.tsx"],
+    "css": "src/components/ui/shape-frame.css",
+    "categories": ["primitives", "shapes"]
+  },
+  {
+    "name": "frame-effects",
+    "type": "registry:ui",
+    "title": "Frame Effects",
+    "description": "Effect layers for a frame in plain CSS: a gradient line, a glow, and a beam of light that travels around the border.",
+    "requires": ["frame"],
+    "files": ["src/components/ui/frame-effects.tsx"],
+    "css": "src/components/ui/frame-effects.css",
+    "categories": ["primitives", "effects"]
+  },
+  {
+    "name": "frame-spotlight",
+    "type": "registry:ui",
+    "title": "Frame Spotlight",
+    "description": "A light on the frame's line that follows the pointer, shared across every frame on the page.",
+    "requires": ["frame"],
+    "files": ["src/components/ui/frame-spotlight.tsx"],
+    "css": "src/components/ui/frame-spotlight.css",
+    "categories": ["primitives", "effects"]
+  },
+  {
+    "name": "frame-metal",
+    "type": "registry:ui",
+    "title": "Frame Metal",
+    "description": "Liquid metal on the frame's line, drawn with WebGL, in chromatic, silver and gold.",
+    "requires": ["frame"],
+    "files": ["src/components/ui/frame-metal.tsx"],
+    "css": "src/components/ui/frame-metal.css",
+    "categories": ["primitives", "effects"]
+  },
+  {
+    "name": "bracket-frame",
+    "type": "registry:component",
+    "title": "Bracket Frame",
+    "description": "Corner brackets around a dashed border.",
+    "requires": ["frame"],
+    "files": ["src/components/bracket-frame.tsx"],
+    "categories": ["frames"]
+  },
+  {
+    "name": "hatch-divider",
+    "type": "registry:component",
+    "title": "Hatch Divider",
+    "description": "A hatched band between two lines for separating page sections, with marks where it meets the page rails.",
+    "requires": ["frame"],
+    "files": ["src/components/hatch-divider.tsx"],
+    "categories": ["frames"]
+  },
+  {
+    "name": "ticket-frame",
+    "type": "registry:component",
+    "title": "Ticket Frame",
+    "description": "A ticket with rounded corners, a perforated line and a tear-off stub.",
+    "requires": ["shape-frame"],
+    "files": ["src/components/ticket-frame.tsx"],
+    "categories": ["shapes"]
+  },
+  {
+    "name": "beam-frame",
+    "type": "registry:component",
+    "title": "Beam Frame",
+    "description": "A quiet border with a light travelling around it.",
+    "requires": ["frame", "frame-effects"],
+    "files": ["src/components/beam-frame.tsx"],
+    "categories": ["effects"]
+  },
+  {
+    "name": "glow-frame",
+    "type": "registry:component",
+    "title": "Glow Frame",
+    "description": "A gradient border with a halo of the same colours behind it.",
+    "requires": ["frame", "frame-effects"],
+    "files": ["src/components/glow-frame.tsx"],
+    "categories": ["effects"]
+  }
+]

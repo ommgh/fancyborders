@@ -4,7 +4,7 @@ Borders, frames and enclosures for React and Tailwind CSS.
 
 Copy-paste components for the edges of your interface: structural frames (corner brackets, hatched dividers, rails and intersection marks), shaped outlines (bevelled, notched and scooped corners, tickets), line styles, and effects (gradient, glow, a travelling beam, a pointer spotlight and liquid metal). Every component installs with one shadcn CLI command and is styled with Tailwind utilities.
 
-**[fancyborders.vercel.app](https://fancyborders.vercel.app)** shows every component live, with its install command.
+**[fancyborders.vercel.app](https://fancyborders.vercel.app)** shows every component live, with controls to tune it, its install command and its props.
 
 ## Install
 
@@ -164,14 +164,26 @@ bun run build            # registry, then the production build
 
 - Primitives live in `src/components/ui/`, presets in `src/components/`, and each primitive's CSS sits next to it.
 - A layer that needs the browser (`frame-spotlight`, `frame-metal`) is its own registry item and its own client component, so the rest stay server components.
-- `scripts/build-registry.mjs` defines the registry items. It converts each stylesheet into the registry's `css` field, which is how the shadcn CLI installs CSS, then `shadcn build` writes the JSON the CLI downloads.
+- `registry/items.json` lists the registry items. `scripts/build-registry.mjs` turns it into `registry.json`, converting each stylesheet into the registry's `css` field (which is how the shadcn CLI installs CSS), then `shadcn build` writes the JSON the CLI downloads. The site reads the same list to show each item's source for a manual install.
 - Install commands and registry addresses use `NEXT_PUBLIC_SITE_URL`. On Vercel they fall back to the production URL, and locally to `http://localhost:3000`.
+
+### How the site is put together
+
+| Path | What it holds |
+| --- | --- |
+| `src/app/page.tsx` | The landing page. |
+| `src/app/docs/` | The docs: guides, the component gallery, and one page per component at `/docs/components/<slug>`. |
+| `src/content/docs.ts` | Every component page and how the sidebar groups them. |
+| `src/content/playgrounds/` | The live preview for each page: its controls, how to render them, and the code to print. |
+| `src/content/api.ts` | The props tables. |
+| `src/demos/` | Static examples. A page shows each one running and, read from the same file, its source. |
+| `src/components/site/` | The site's own chrome: header, sidebar, code blocks, playground. |
 
 ### Adding a component
 
 1. Build it from the existing primitives where possible and put it in `src/components/`.
-2. Add an item for it in `scripts/build-registry.mjs`, listing the primitives it uses in `registryDependencies`.
-3. Add a card for it to the showcase in `src/app/page.tsx`.
+2. Add an item for it to `registry/items.json`, listing the items it is built on in `requires`.
+3. Give it a page: an entry in `src/content/docs.ts`, a playground in `src/content/playgrounds/` (registered in its `index.ts` under the page's slug), and its props in `src/content/api.ts`. The gallery, the sidebar, the landing page and the sitemap pick it up from there.
 4. Run `bun run registry:build` and test the install from `http://localhost:3000/r/<name>.json` in a separate project.
 
 ## Credits
