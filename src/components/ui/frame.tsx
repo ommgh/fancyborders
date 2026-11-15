@@ -10,7 +10,8 @@ export type Side = "top" | "right" | "bottom" | "left";
 const CORNERS: readonly Corner[] = ["tl", "tr", "br", "bl"];
 const SIDES: readonly Side[] = ["top", "right", "bottom", "left"];
 
-function len(value: Length | undefined) {
+/** A length prop as CSS. Shared with the other frame layers. */
+export function len(value: Length | undefined) {
   if (value === undefined) return undefined;
   return typeof value === "number" ? `${value}px` : value;
 }
@@ -19,7 +20,7 @@ function len(value: Length | undefined) {
  * Builds an inline style from custom properties, skipping the unset ones so
  * the defaults in frame.css (or a utility class) still apply.
  */
-function vars(
+export function vars(
   properties: Record<`--${string}`, string | undefined>,
   style?: CSSProperties,
 ): CSSProperties {
@@ -30,7 +31,8 @@ function vars(
   return { ...out, ...style };
 }
 
-type LayerProps = Omit<ComponentProps<"div">, "children" | "color">;
+/** Props every decoration layer accepts. */
+export type LayerProps = Omit<ComponentProps<"div">, "children" | "color">;
 
 /* ── Frame ─────────────────────────────────────────────────────────────── */
 
@@ -126,6 +128,11 @@ export type FrameRulesProps = LayerProps & {
   dash?: Length;
   /** Space between dashes. */
   gap?: Length;
+  /**
+   * Marching ants: the dashes travel clockwise around the frame. A number
+   * is the time, in seconds, a dash takes to reach the next one's place.
+   */
+  march?: boolean | number;
   offset?: Length;
   color?: string;
 };
@@ -140,6 +147,7 @@ export function FrameRules({
   overshoot,
   dash,
   gap,
+  march = false,
   offset,
   color,
   className,
@@ -148,12 +156,15 @@ export function FrameRules({
 }: FrameRulesProps) {
   const split = typeof overshoot === "object";
   const hidden = (side: Side) => (sides.includes(side) ? undefined : "0px");
+  const marching = march !== false;
+  const dashed = marching || dash !== undefined || gap !== undefined;
 
   return (
     <div
       aria-hidden
       data-slot="frame-rules"
-      data-dashed={dash !== undefined || gap !== undefined ? "" : undefined}
+      data-dashed={dashed ? "" : undefined}
+      data-march={marching ? "" : undefined}
       className={cn("fb-rules", className)}
       style={vars(
         {
@@ -162,6 +173,8 @@ export function FrameRules({
           "--fb-overshoot-y": split ? len(overshoot.y) : undefined,
           "--fb-dash": len(dash),
           "--fb-gap": len(gap),
+          "--fb-march-duration":
+            typeof march === "number" ? `${march}s` : undefined,
           "--fb-offset": len(offset),
           "--fb-line-color": color,
           "--fb-rule-top": hidden("top"),

@@ -57,9 +57,10 @@
 }
 
 @utility frame-bg-* {
+  --fb-shape-bg: --value(--color-*, [color]);
   --fb-shape-bg: color-mix(
     in oklab,
-    --value(--color-*, [color]) calc(--modifier(integer, --default(100)) * 1%),
+    --value(--color-*, [color]) calc(--modifier(integer) * 1%),
     transparent
   );
 }

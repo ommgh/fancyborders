@@ -1,0 +1,43 @@
+/*
+ * Frame metal.
+ *
+ * A canvas of moving metal, masked down to the frame's line and laid over
+ * the frame's ordinary line colour. The metal is see-through where it has
+ * nothing to add, so the frame keeps a continuous edge; before the canvas
+ * has drawn, and wherever WebGL is unavailable, the plain line is all there
+ * is. Import this file after frame.css.
+ */
+@layer components {
+  .fb-metal {
+    position: absolute;
+    inset: calc(var(--fb-offset, 0px) * -1);
+    padding: var(--fb-line);
+    border-radius: var(--fb-radius);
+    background: var(--fb-line-color);
+    mask-image: linear-gradient(#000 0 0), linear-gradient(#000 0 0);
+    mask-clip: content-box, border-box;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .fb-metal > canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: var(--fb-metal-opacity, 1);
+  }
+
+  /* Inside a shape frame the metal follows the shape's stroke. */
+  .fb-shape[data-path="polygon"] > .fb-metal {
+    mask-image: none;
+    clip-path: var(--fb-shape-ring);
+  }
+
+  @supports (clip-path: shape(from 0 0, line to 1px 1px, close)) {
+    .fb-shape[data-path="shape"] > .fb-metal {
+      mask-image: none;
+      clip-path: var(--fb-shape-ring);
+    }
+  }
+}

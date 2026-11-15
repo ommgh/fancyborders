@@ -1,0 +1,305 @@
+/*
+ * Frame effects.
+ *
+ * Three more layers for a frame, all pure CSS:
+ *   .fb-gradient  a gradient drawn on the frame's line
+ *   .fb-glow      the same gradient blurred into a halo
+ *   .fb-beam      a light that travels around the line
+ *
+ * They share one palette: --fb-from, --fb-via and --fb-to, or a whole
+ * --fb-stops list. Set it with a prop, with a utility on the frame, or by
+ * editing the defaults below. Import this file after frame.css.
+ */
+
+/* The angle a spinning gradient has turned through. Registered so it can
+   animate, and inherited so a layer's pseudo-elements follow it. */
+@property --fb-angle {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 0deg;
+}
+
+@layer components {
+  .fb-gradient,
+  .fb-glow,
+  .fb-beam {
+    --_from: var(--fb-from, #38bdf8);
+    --_to: var(--fb-to, #e879f9);
+    /* Without a middle colour the gradient runs straight from one end to
+       the other, which is what the midpoint of the two gives. */
+    --_stops: var(
+      --fb-stops,
+      var(--_from),
+      var(--fb-via, color-mix(in oklab, var(--_from), var(--_to))),
+      var(--_to)
+    );
+    --_paint: var(
+      --fb-gradient,
+      linear-gradient(var(--fb-gradient-angle, 135deg) in oklab, var(--_stops))
+    );
+
+    position: absolute;
+    inset: calc(var(--fb-offset, 0px) * -1);
+    border-radius: var(--fb-radius);
+    pointer-events: none;
+  }
+
+  /* A spinning gradient is conic, and ends on its first colour so the turn
+     has no seam. */
+  .fb-gradient[data-spin],
+  .fb-glow[data-spin] {
+    --_paint: var(
+      --fb-gradient,
+      conic-gradient(from var(--fb-angle) in oklab, var(--_stops), var(--_from))
+    );
+
+    animation: fb-spin var(--fb-duration, 4s) linear infinite;
+  }
+
+  /*
+   * The ring: a box with the line width as padding, masked down to the band
+   * between its border box and its content box. It follows the radius.
+   */
+  .fb-gradient,
+  .fb-glow::before,
+  .fb-beam-stroke {
+    padding: var(--fb-line);
+    mask-image: linear-gradient(#000 0 0), linear-gradient(#000 0 0);
+    mask-clip: content-box, border-box;
+    mask-composite: exclude;
+  }
+
+  /* ── Gradient ───────────────────────────────────────────────────────── */
+
+  .fb-gradient {
+    background: var(--_paint);
+  }
+
+  /* ── Glow ───────────────────────────────────────────────────────────── */
+
+  /*
+   * A wider ring, centred on the frame's line and blurred. The blur is on
+   * the layer and the ring on its pseudo-element, because a mask applies
+   * after a filter and would cut the halo off.
+   */
+  .fb-glow {
+    --_spread: var(--fb-glow-spread, 14px);
+
+    z-index: -1;
+    filter: blur(var(--fb-glow-blur, 10px));
+    opacity: var(--fb-glow-opacity, 0.75);
+  }
+
+  .fb-glow::before {
+    content: "";
+    position: absolute;
+    inset: calc((var(--fb-line) - var(--_spread)) / 2);
+    padding: var(--_spread);
+    border-radius: max(
+      0px,
+      var(--fb-radius) + (var(--_spread) - var(--fb-line)) / 2
+    );
+    background: var(--_paint);
+  }
+
+  .fb-glow[data-pulse]::before {
+    animation: fb-pulse var(--fb-pulse-duration, 2.4s) ease-in-out infinite
+      alternate;
+  }
+
+  /* ── Beam ───────────────────────────────────────────────────────────── */
+
+  /*
+   * Each beam is a pair of soft discs that follow the frame's outline with
+   * offset-path: a small one in the first colour, and a larger one in the
+   * second trailing just behind it. The stroke layer masks them down to the
+   * line; the bloom layer shows a third, faint disc whole, as the light the
+   * beam casts. Discs look the same at any rotation, so the beam turns a
+   * square corner without a jump.
+   */
+  .fb-beam {
+    --_size: var(--fb-beam-size, 120px);
+    --_time: var(--fb-duration, 6s);
+  }
+
+  .fb-beam-stroke,
+  .fb-beam-bloom {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+
+  .fb-beam-stroke {
+    padding: var(--fb-beam-line, var(--fb-line));
+  }
+
+  .fb-beam-bloom {
+    z-index: -1;
+    opacity: var(--fb-beam-bloom, 0.25);
+  }
+
+  @supports (offset-path: inset(0)) {
+    .fb-beam-stroke::before,
+    .fb-beam-stroke::after,
+    .fb-beam-bloom::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: var(--_d);
+      height: var(--_d);
+      border-radius: 50%;
+      background: radial-gradient(closest-side, var(--_c), transparent);
+      offset-path: inset(
+        calc(var(--fb-line) / 2) round
+          max(0px, var(--fb-radius) - var(--fb-line) / 2)
+      );
+      offset-rotate: 0deg;
+      animation: fb-beam var(--_time) linear infinite;
+      /* Extra beams start part-way round. */
+      animation-delay: calc(var(--_time) * var(--fb-beam-phase, 0) * -1);
+    }
+
+    .fb-beam-stroke::before {
+      --_c: var(--_to);
+      --_d: var(--_size);
+      --_lag: calc(var(--_size) * 0.28 * var(--_dir, 1));
+    }
+
+    .fb-beam-stroke::after {
+      --_c: var(--_from);
+      --_d: calc(var(--_size) * 0.55);
+    }
+
+    .fb-beam-bloom::before {
+      --_c: color-mix(in oklab, var(--_from), var(--_to));
+      --_d: calc(var(--_size) * 0.8);
+      --_lag: calc(var(--_size) * 0.1 * var(--_dir, 1));
+    }
+
+    .fb-beam[data-reverse] {
+      --_dir: -1;
+    }
+
+    .fb-beam[data-reverse] > ::before,
+    .fb-beam[data-reverse] > ::after {
+      animation-direction: reverse;
+    }
+  }
+
+  /* ── Inside a shape frame ───────────────────────────────────────────── */
+
+  /*
+   * A shape frame publishes its outline as paths. The rings take the path
+   * of its stroke instead of the mask, and the glow becomes the whole shape
+   * blurred behind the shape's surface, so give the shape a `fill`.
+   */
+  .fb-shape > .fb-glow {
+    z-index: -3;
+  }
+
+  .fb-shape[data-path="polygon"] > .fb-gradient,
+  .fb-shape[data-path="polygon"] > .fb-beam > .fb-beam-stroke {
+    mask-image: none;
+    clip-path: var(--fb-shape-ring);
+  }
+
+  .fb-shape[data-path="polygon"] > .fb-glow::before {
+    inset: 0;
+    border-radius: 0;
+    mask-image: none;
+    clip-path: var(--fb-shape-outer);
+  }
+
+  @supports (clip-path: shape(from 0 0, line to 1px 1px, close)) {
+    .fb-shape[data-path="shape"] > .fb-gradient,
+    .fb-shape[data-path="shape"] > .fb-beam > .fb-beam-stroke {
+      mask-image: none;
+      clip-path: var(--fb-shape-ring);
+    }
+
+    .fb-shape[data-path="shape"] > .fb-glow::before {
+      inset: 0;
+      border-radius: 0;
+      mask-image: none;
+      clip-path: var(--fb-shape-outer);
+    }
+  }
+
+  /* ── Motion ─────────────────────────────────────────────────────────── */
+
+  @keyframes fb-spin {
+    to {
+      --fb-angle: 360deg;
+    }
+  }
+
+  @keyframes fb-pulse {
+    from {
+      opacity: 0.3;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* A lagging disc starts behind the head; the outline is a closed path, so
+     a negative distance wraps round to the end of the lap. */
+  @keyframes fb-beam {
+    from {
+      offset-distance: calc(0% - var(--_lag, 0px));
+    }
+    to {
+      offset-distance: calc(100% - var(--_lag, 0px));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fb-gradient[data-spin],
+    .fb-glow[data-spin],
+    .fb-glow[data-pulse]::before,
+    .fb-beam > ::before,
+    .fb-beam > ::after {
+      animation: none;
+    }
+  }
+}
+
+/*
+ * Tailwind utilities for the effect palette and timing. Put them on a frame
+ * to colour every effect layer inside it:
+ *
+ *   <Frame className="frame-from-amber-300 frame-to-rose-500">
+ */
+@utility frame-from-* {
+  --fb-from: --value(--color-*, [color]);
+  --fb-from: color-mix(
+    in oklab,
+    --value(--color-*, [color]) calc(--modifier(integer) * 1%),
+    transparent
+  );
+}
+
+@utility frame-via-* {
+  --fb-via: --value(--color-*, [color]);
+  --fb-via: color-mix(
+    in oklab,
+    --value(--color-*, [color]) calc(--modifier(integer) * 1%),
+    transparent
+  );
+}
+
+@utility frame-to-* {
+  --fb-to: --value(--color-*, [color]);
+  --fb-to: color-mix(
+    in oklab,
+    --value(--color-*, [color]) calc(--modifier(integer) * 1%),
+    transparent
+  );
+}
+
+/* Time for one turn or one lap, in milliseconds like Tailwind's own
+   duration utilities. */
+@utility frame-duration-* {
+  --fb-duration: calc(--value(integer) * 1ms);
+}

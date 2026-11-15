@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @import "../components/ui/frame.css";
 @import "../components/ui/shape-frame.css";
+@import "../components/ui/frame-effects.css";
+@import "../components/ui/frame-spotlight.css";
+@import "../components/ui/frame-metal.css";
 
 :root {
   --background: #ffffff;

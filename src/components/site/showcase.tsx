@@ -31,6 +31,7 @@ export function Card({
   description,
   item,
   recipe = false,
+  stage = "page",
   className,
   children,
 }: {
@@ -40,6 +41,11 @@ export function Card({
   item: string;
   /** True when the preview is a composition rather than its own item. */
   recipe?: boolean;
+  /**
+   * Surface behind the preview. `dark` is a dark stage whatever the page's
+   * colour scheme, for effects that are made of light.
+   */
+  stage?: "page" | "dark";
   className?: string;
   children: ReactNode;
 }) {
@@ -47,7 +53,10 @@ export function Card({
     <article className="flex min-w-0 flex-col">
       <div
         className={cn(
-          "grid min-h-60 flex-1 place-items-center bg-foreground/[0.03] p-8",
+          "grid min-h-60 flex-1 place-items-center p-8",
+          stage === "dark"
+            ? "bg-neutral-950 text-neutral-100 [--background:var(--color-neutral-950)]"
+            : "bg-foreground/[0.03]",
           className,
         )}
       >

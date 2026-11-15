@@ -18,26 +18,39 @@ const item = (name) => `${site}/r/${name}.json`;
 
 const tidy = (value) => value.replace(/\s+/g, " ").trim();
 
+/**
+ * The declarations directly inside a node. A property declared more than
+ * once (a Tailwind utility giving a plain value and one with a modifier)
+ * keeps every value: JSON has no duplicate keys, so the later ones ride
+ * along in the first one's value, and the CLI writes them out as written.
+ */
+function declarations(node) {
+  const out = {};
+  node.each((child) => {
+    if (child.type !== "decl") return;
+    const value = tidy(child.value);
+    out[child.prop] =
+      child.prop in out ? `${out[child.prop]}; ${child.prop}: ${value}` : value;
+  });
+  return out;
+}
+
 function convert(container) {
   const out = {};
+  const add = (key, value) => {
+    // The same selector twice in one block would silently lose the first.
+    if (key in out) throw new Error(`"${key}" appears twice in one block`);
+    out[key] = value;
+  };
   for (const node of container.nodes ?? []) {
     if (node.type === "rule") {
-      const declarations = {};
-      node.walkDecls((decl) => {
-        declarations[decl.prop] = tidy(decl.value);
-      });
-      out[tidy(node.selector)] = declarations;
+      add(tidy(node.selector), declarations(node));
     } else if (node.type === "atrule") {
-      const key = tidy(`@${node.name} ${node.params}`);
-      if (node.name === "utility") {
-        const declarations = {};
-        node.each((child) => {
-          if (child.type === "decl") declarations[child.prop] = tidy(child.value);
-        });
-        out[key] = declarations;
-      } else {
-        out[key] = convert(node);
-      }
+      // Declarations first (@utility, @property), then anything nested.
+      add(tidy(`@${node.name} ${node.params}`), {
+        ...declarations(node),
+        ...convert(node),
+      });
     }
   }
   return out;
@@ -70,6 +83,45 @@ const registry = {
       files: [{ path: "src/components/ui/shape-frame.tsx", type: "registry:ui" }],
       css: css("src/components/ui/shape-frame.css"),
       categories: ["primitives", "shapes"],
+    },
+    {
+      name: "frame-effects",
+      type: "registry:ui",
+      title: "Frame Effects",
+      description:
+        "Effect layers for a frame in plain CSS: a gradient line, a glow, and a beam of light that travels around the border.",
+      registryDependencies: [item("frame")],
+      files: [
+        { path: "src/components/ui/frame-effects.tsx", type: "registry:ui" },
+      ],
+      css: css("src/components/ui/frame-effects.css"),
+      categories: ["primitives", "effects"],
+    },
+    {
+      name: "frame-spotlight",
+      type: "registry:ui",
+      title: "Frame Spotlight",
+      description:
+        "A light on the frame's line that follows the pointer, shared across every frame on the page.",
+      registryDependencies: [item("frame")],
+      files: [
+        { path: "src/components/ui/frame-spotlight.tsx", type: "registry:ui" },
+      ],
+      css: css("src/components/ui/frame-spotlight.css"),
+      categories: ["primitives", "effects"],
+    },
+    {
+      name: "frame-metal",
+      type: "registry:ui",
+      title: "Frame Metal",
+      description:
+        "Liquid metal on the frame's line, drawn with WebGL, in chromatic, silver and gold.",
+      registryDependencies: [item("frame")],
+      files: [
+        { path: "src/components/ui/frame-metal.tsx", type: "registry:ui" },
+      ],
+      css: css("src/components/ui/frame-metal.css"),
+      categories: ["primitives", "effects"],
     },
     {
       name: "bracket-frame",
@@ -105,6 +157,29 @@ const registry = {
         { path: "src/components/ticket-frame.tsx", type: "registry:component" },
       ],
       categories: ["shapes"],
+    },
+    {
+      name: "beam-frame",
+      type: "registry:component",
+      title: "Beam Frame",
+      description: "A quiet border with a light travelling around it.",
+      registryDependencies: [item("frame"), item("frame-effects")],
+      files: [
+        { path: "src/components/beam-frame.tsx", type: "registry:component" },
+      ],
+      categories: ["effects"],
+    },
+    {
+      name: "glow-frame",
+      type: "registry:component",
+      title: "Glow Frame",
+      description:
+        "A gradient border with a halo of the same colours behind it.",
+      registryDependencies: [item("frame"), item("frame-effects")],
+      files: [
+        { path: "src/components/glow-frame.tsx", type: "registry:component" },
+      ],
+      categories: ["effects"],
     },
   ],
 };

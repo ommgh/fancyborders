@@ -2,7 +2,7 @@
 
 Borders, frames and enclosures for React and Tailwind CSS.
 
-Copy-paste components for the edges of your interface: structural frames (corner brackets, hatched dividers, rails and intersection marks), shaped outlines (bevelled, notched and scooped corners, tickets) and line styles. Every component installs with one shadcn CLI command and is styled with Tailwind utilities.
+Copy-paste components for the edges of your interface: structural frames (corner brackets, hatched dividers, rails and intersection marks), shaped outlines (bevelled, notched and scooped corners, tickets), line styles, and effects (gradient, glow, a travelling beam, a pointer spotlight and liquid metal). Every component installs with one shadcn CLI command and is styled with Tailwind utilities.
 
 **[fancyborders.vercel.app](https://fancyborders.vercel.app)** shows every component live, with its install command.
 
@@ -25,6 +25,11 @@ The CLI copies the component into your project, installs anything it depends on 
 | `bracket-frame` | Corner brackets around a dashed border. |
 | `hatch-divider` | A hatched band for separating page sections, with marks where it meets the page rails. |
 | `ticket-frame` | A ticket with rounded corners, a perforation and a tear-off stub. |
+| `frame-effects` | Effect layers in plain CSS: a gradient line, a glow, and a beam of light that travels the border. |
+| `frame-spotlight` | A light on the border that follows the pointer. |
+| `frame-metal` | Liquid metal on the border, drawn with WebGL. |
+| `beam-frame` | A quiet border with a light travelling around it. |
+| `glow-frame` | A gradient border with a halo of the same colours behind it. |
 
 Replace the item name in the URL above to install any of them.
 
@@ -70,6 +75,54 @@ import { ShapeFrame } from "@/components/ui/shape-frame";
 </ShapeFrame>;
 ```
 
+## Effects
+
+Effects are more layers for the same frames. `FrameGradient`, `FrameGlow` and `FrameBeam` are plain CSS, so they render on the server and need no JavaScript:
+
+```tsx
+import { Frame, FrameBorder } from "@/components/ui/frame";
+import { FrameBeam, FrameGlow, FrameGradient } from "@/components/ui/frame-effects";
+
+<Frame radius={14} className="p-6">
+  <FrameGlow spin />
+  <FrameGradient spin />
+  Content
+</Frame>;
+
+<Frame radius={14} className="p-6">
+  <FrameBorder />
+  <FrameBeam duration={6} />
+  Content
+</Frame>;
+```
+
+| Layer | Draws |
+| --- | --- |
+| `FrameGradient` | A gradient on the frame's line. `spin` turns it around the frame. |
+| `FrameGlow` | The same gradient blurred into a halo behind the content. `spin` turns it and `pulse` makes it breathe. |
+| `FrameBeam` | A light that travels the border at a steady speed, whatever the frame's proportions. Takes a `size`, a `duration`, a `count` and `reverse`. |
+| `FrameSpotlight` | A light on the line that follows the pointer, and with `wash` across the surface too. A client component, from `frame-spotlight`. |
+| `FrameMetal` | Liquid metal on the line in `chromatic`, `silver` or `gold`. A client component, from `frame-metal`. |
+
+All of them take `colors`. Leave it out and they read a shared palette from the frame, so one set of utilities colours every effect layer inside it:
+
+```tsx
+<Frame className="frame-from-amber-300 frame-to-rose-500">
+  <FrameGlow />
+  <FrameGradient />
+</Frame>
+```
+
+`FrameRules` can also animate its dashes, for a marching-ants selection:
+
+```tsx
+<FrameRules dash={6} gap={4} march />
+```
+
+Inside a `ShapeFrame` the effect layers follow the shape instead of the rectangle. The glow becomes the whole shape blurred behind it, so give the shape a `fill`.
+
+Every animation stops for people who ask for reduced motion.
+
 ## Tailwind utilities
 
 Frames read their colours and sizes from custom properties, and each one has a utility. Put them on a frame, or on any ancestor, to restyle every layer inside it. They accept theme values, opacity modifiers and variants:
@@ -87,12 +140,16 @@ Frames read their colours and sizes from custom properties, and each one has a u
 | `frame-fill-*` | Colour of fill patterns |
 | `frame-surface-*` | Colour painted behind hollow marks |
 | `frame-bg-*` | Background inside a shape frame |
+| `frame-from-*`, `frame-via-*`, `frame-to-*` | Colours of the effect layers |
+| `frame-duration-*` | Time for one turn of a gradient or one lap of a beam, in milliseconds |
 
 ## Browser support
 
 Structural frames use only widely supported CSS (gradients, custom properties and `color-mix()`).
 
 Shape frames draw their outline with `clip-path`, so the border, fill and `drop-shadow` follow the shape everywhere. Where the newer [`border-shape`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/border-shape) property is supported (Chromium 147 and later), the focus outline and `box-shadow` follow the shape too. Curved corners (`round` and `scoop`) need the CSS `shape()` function and fall back to a plain rectangular border without it.
+
+Effects need a browser that Tailwind CSS v4 itself supports. `FrameBeam` moves along the outline with `offset-path` (Chromium 116, Firefox 122, Safari 18) and draws nothing without it. Spinning gradients and marching dashes animate registered custom properties (`@property`). `FrameMetal` needs WebGL and shows the frame's plain line without it.
 
 ## Development
 
@@ -106,6 +163,7 @@ bun run build            # registry, then the production build
 ```
 
 - Primitives live in `src/components/ui/`, presets in `src/components/`, and each primitive's CSS sits next to it.
+- A layer that needs the browser (`frame-spotlight`, `frame-metal`) is its own registry item and its own client component, so the rest stay server components.
 - `scripts/build-registry.mjs` defines the registry items. It converts each stylesheet into the registry's `css` field, which is how the shadcn CLI installs CSS, then `shadcn build` writes the JSON the CLI downloads.
 - Install commands and registry addresses use `NEXT_PUBLIC_SITE_URL`. On Vercel they fall back to the production URL, and locally to `http://localhost:3000`.
 
@@ -115,3 +173,7 @@ bun run build            # registry, then the production build
 2. Add an item for it in `scripts/build-registry.mjs`, listing the primitives it uses in `registryDependencies`.
 3. Add a card for it to the showcase in `src/app/page.tsx`.
 4. Run `bun run registry:build` and test the install from `http://localhost:3000/r/<name>.json` in a separate project.
+
+## Credits
+
+The effects were inspired by Jakub Antalik's [Border Beam](https://libraries.dev/beam) and [Metal FX](https://github.com/Jakubantalik/metal-fx). The shader and palettes in `frame-metal` are adapted from Metal FX under its MIT License; the full notice is in [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md).

@@ -1,0 +1,74 @@
+/*
+ * Frame spotlight.
+ *
+ * A light on the frame's line that follows the pointer. The component
+ * writes the pointer's position into --fb-x and --fb-y; everything else is
+ * the radial gradient below. Import this file after frame.css.
+ */
+@layer components {
+  .fb-spotlight {
+    --_from: var(--fb-from, currentColor);
+    --_to: var(--fb-to, var(--_from));
+    --_light: radial-gradient(
+      circle var(--fb-spot-size, 220px) at var(--fb-x, 50%) var(--fb-y, 50%),
+      var(--_from),
+      color-mix(in oklab, var(--_to) 55%, transparent) 45%,
+      transparent
+    );
+
+    position: absolute;
+    inset: calc(var(--fb-offset, 0px) * -1);
+    border-radius: var(--fb-radius);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+  }
+
+  /* Lit while the pointer is somewhere on the page. */
+  .fb-spotlight[data-lit] {
+    opacity: 1;
+  }
+
+  .fb-spotlight::before,
+  .fb-spotlight[data-wash]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--_light);
+  }
+
+  /* The line: the same ring mask the other effect layers use. */
+  .fb-spotlight::before {
+    padding: var(--fb-line);
+    mask-image: linear-gradient(#000 0 0), linear-gradient(#000 0 0);
+    mask-clip: content-box, border-box;
+    mask-composite: exclude;
+  }
+
+  /* A faint wash of the same light across the frame's surface. */
+  .fb-spotlight[data-wash]::after {
+    opacity: var(--fb-spot-wash, 0.08);
+  }
+
+  /* Inside a shape frame the line and the wash follow the shape. */
+  .fb-shape[data-path="polygon"] > .fb-spotlight::before {
+    mask-image: none;
+    clip-path: var(--fb-shape-ring);
+  }
+
+  .fb-shape[data-path="polygon"] > .fb-spotlight[data-wash]::after {
+    clip-path: var(--fb-shape-outer);
+  }
+
+  @supports (clip-path: shape(from 0 0, line to 1px 1px, close)) {
+    .fb-shape[data-path="shape"] > .fb-spotlight::before {
+      mask-image: none;
+      clip-path: var(--fb-shape-ring);
+    }
+
+    .fb-shape[data-path="shape"] > .fb-spotlight[data-wash]::after {
+      clip-path: var(--fb-shape-outer);
+    }
+  }
+}

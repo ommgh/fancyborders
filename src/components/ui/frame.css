@@ -12,6 +12,14 @@
  * Import this file after Tailwind so the rules land in its `components`
  * layer and utilities can still override them.
  */
+
+/* How far marching dashes have travelled. Registered so it can animate. */
+@property --fb-march {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
 @layer components {
   .fb-frame {
     --fb-line: 1px;
@@ -43,15 +51,18 @@
     --_off: var(--fb-offset, 0px);
     --_h: linear-gradient(var(--fb-line-color), var(--fb-line-color));
     --_v: var(--_h);
+    /* The bottom and left lines, when they differ from the top and right. */
+    --_hb: var(--_h);
+    --_vl: var(--_v);
 
     position: absolute;
     inset: calc((var(--_oy) + var(--_off)) * -1)
       calc((var(--_ox) + var(--_off)) * -1);
     background:
       var(--_h) 0 var(--_oy) / 100% var(--fb-rule-top, var(--fb-line)) no-repeat,
-      var(--_h) 0 calc(100% - var(--_oy)) / 100%
+      var(--_hb) 0 calc(100% - var(--_oy)) / 100%
         var(--fb-rule-bottom, var(--fb-line)) no-repeat,
-      var(--_v) var(--_ox) 0 / var(--fb-rule-left, var(--fb-line)) 100% no-repeat,
+      var(--_vl) var(--_ox) 0 / var(--fb-rule-left, var(--fb-line)) 100% no-repeat,
       var(--_v) calc(100% - var(--_ox)) 0 / var(--fb-rule-right, var(--fb-line))
         100% no-repeat;
     pointer-events: none;
@@ -70,6 +81,35 @@
       var(--fb-line-color) 0 var(--_dash),
       transparent 0 var(--_period)
     );
+  }
+
+  /*
+   * Marching ants. Each side's dashes are drawn along its own direction of
+   * travel (right, down, left, up), so one moving offset carries them
+   * clockwise around the frame.
+   */
+  .fb-rules[data-march] {
+    --_ants:
+      var(--fb-line-color) var(--fb-march) calc(var(--fb-march) + var(--_dash)),
+      transparent 0 calc(var(--fb-march) + var(--_period));
+    --_h: repeating-linear-gradient(90deg, var(--_ants));
+    --_v: repeating-linear-gradient(180deg, var(--_ants));
+    --_hb: repeating-linear-gradient(270deg, var(--_ants));
+    --_vl: repeating-linear-gradient(0deg, var(--_ants));
+
+    animation: fb-march var(--fb-march-duration, 0.6s) linear infinite;
+  }
+
+  @keyframes fb-march {
+    to {
+      --fb-march: var(--_period);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fb-rules[data-march] {
+      animation: none;
+    }
   }
 
   /* ── Corners ────────────────────────────────────────────────────────── */
@@ -222,6 +262,9 @@
  * ancestor, to restyle every layer inside it:
  *
  *   <Frame className="frame-color-sky-500/40 frame-line-2 frame-radius-xl">
+ *
+ * Colour utilities declare their property twice: once plain, and once with
+ * the opacity modifier. Tailwind drops the second when no modifier is given.
  */
 @utility frame-line-* {
   --fb-line: calc(--value(integer) * 1px);
@@ -232,9 +275,10 @@
 }
 
 @utility frame-color-* {
+  --fb-line-color: --value(--color-*, [color]);
   --fb-line-color: color-mix(
     in oklab,
-    --value(--color-*, [color]) calc(--modifier(integer, --default(100)) * 1%),
+    --value(--color-*, [color]) calc(--modifier(integer) * 1%),
     transparent
   );
 }
@@ -244,9 +288,10 @@
 }
 
 @utility frame-fill-* {
+  --fb-fill-color: --value(--color-*, [color]);
   --fb-fill-color: color-mix(
     in oklab,
-    --value(--color-*, [color]) calc(--modifier(integer, --default(100)) * 1%),
+    --value(--color-*, [color]) calc(--modifier(integer) * 1%),
     transparent
   );
 }

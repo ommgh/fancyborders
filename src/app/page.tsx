@@ -1,4 +1,6 @@
+import { BeamFrame } from "@/components/beam-frame";
 import { BracketFrame } from "@/components/bracket-frame";
+import { GlowFrame } from "@/components/glow-frame";
 import { HatchDivider } from "@/components/hatch-divider";
 import { CopyCommand } from "@/components/site/copy-command";
 import { Card, Section } from "@/components/site/showcase";
@@ -10,6 +12,13 @@ import {
   FrameFill,
   FrameRules,
 } from "@/components/ui/frame";
+import {
+  FrameBeam,
+  FrameGlow,
+  FrameGradient,
+} from "@/components/ui/frame-effects";
+import { FrameMetal } from "@/components/ui/frame-metal";
+import { FrameSpotlight } from "@/components/ui/frame-spotlight";
 import { ShapeFrame } from "@/components/ui/shape-frame";
 import { installCommand, SITE_NAME } from "@/lib/site";
 
@@ -17,15 +26,12 @@ const NAV = [
   ["Frames", "#frames"],
   ["Shapes", "#shapes"],
   ["Lines", "#lines"],
+  ["Effects", "#effects"],
   ["Tailwind", "#tailwind"],
   ["Roadmap", "#roadmap"],
 ] as const;
 
 const ROADMAP = [
-  [
-    "Effects",
-    "Gradient, glow and animated borders, built on the same frame layers.",
-  ],
   [
     "Page structure",
     "Rails, section grids and intersection marks as a layout system.",
@@ -62,8 +68,8 @@ export default function Home() {
           </h1>
           <p className="mt-5 max-w-prose text-lg text-foreground/60">
             Copy-paste components for the edges of your interface: structural
-            frames, shaped outlines and line styles. Free and open source.
-            Install any of them with the shadcn CLI.
+            frames, shaped outlines, line styles and effects. Free and open
+            source. Install any of them with the shadcn CLI.
           </p>
           <div className="mt-8 max-w-xl">
             <CopyCommand command={installCommand("frame")} />
@@ -283,6 +289,181 @@ export default function Home() {
         <HatchDivider bleed />
 
         <Section
+          id="effects"
+          title="Effects"
+          lead="Gradient, glow and motion, as more layers for the same frames. Most are plain CSS and render on the server; the spotlight and the metal are small client components."
+        >
+          <Card
+            title="Beam Frame"
+            description="A light that travels the border at a steady speed, around any proportions and any corner."
+            item="beam-frame"
+            stage="dark"
+          >
+            <BeamFrame
+              radius={14}
+              className="w-full max-w-xs bg-neutral-900/60 p-6"
+            >
+              <p className="font-medium">Deploying to production</p>
+              <p className="mt-1 font-mono text-sm text-neutral-400">
+                step 4 of 6 · 38s
+              </p>
+            </BeamFrame>
+          </Card>
+
+          <Card
+            title="Glow Frame"
+            description="A turning gradient border, with a halo of the same colours glowing behind it."
+            item="glow-frame"
+            stage="dark"
+          >
+            <GlowFrame
+              spin
+              radius={14}
+              colors={["#22d3ee", "#818cf8", "#e879f9", "#fb7185"]}
+              className="w-full max-w-xs bg-neutral-950 p-6"
+            >
+              <p className="font-medium">Pro plan</p>
+              <p className="mt-1 font-mono text-sm text-neutral-400">
+                Everything, unlimited
+              </p>
+            </GlowFrame>
+          </Card>
+
+          <Card
+            title="Liquid Metal"
+            description="A moving metal ring drawn with WebGL, in three finishes. Every ring on the page shares one context."
+            item="frame-metal"
+            stage="dark"
+          >
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              {(["chromatic", "silver", "gold"] as const).map((preset) => (
+                <Frame
+                  key={preset}
+                  radius={999}
+                  line={2}
+                  className="bg-neutral-900 px-5 py-2.5"
+                >
+                  <FrameMetal preset={preset} theme="dark" />
+                  <span className="text-sm font-medium capitalize">
+                    {preset}
+                  </span>
+                </Frame>
+              ))}
+            </div>
+          </Card>
+
+          <Card
+            title="Spotlight"
+            description="Borders that light up near the pointer, across every frame at once. Move over the grid."
+            item="frame-spotlight"
+            stage="dark"
+          >
+            <div className="grid w-full max-w-xs grid-cols-3 gap-3">
+              {["A1", "A2", "A3", "B1", "B2", "B3"].map((cell) => (
+                <Frame key={cell} radius={10} className="p-4">
+                  <FrameBorder />
+                  <FrameSpotlight size={140} wash />
+                  <p className="font-mono text-sm text-neutral-400">{cell}</p>
+                </Frame>
+              ))}
+            </div>
+          </Card>
+
+          <Card
+            title="Gradient"
+            description="A gradient on the line, coloured by props or by frame-from-*, frame-via-* and frame-to-* utilities."
+            item="frame-effects"
+            recipe
+            stage="dark"
+          >
+            <div className="grid w-full max-w-xs gap-5">
+              <Frame radius={10} className="px-4 py-3">
+                <FrameGradient />
+                <p className="font-mono text-sm">default</p>
+              </Frame>
+              <Frame
+                radius={10}
+                line={2}
+                className="px-4 py-3 frame-from-amber-300 frame-to-rose-500"
+              >
+                <FrameGradient angle={90} />
+                <p className="font-mono text-sm">frame-from-amber-300</p>
+              </Frame>
+              <Frame
+                line={2}
+                className="px-4 py-3 frame-from-emerald-400 frame-via-emerald-400/0 frame-to-emerald-400/0"
+              >
+                <FrameGradient spin={3} />
+                <FrameCorners mark="square" />
+                <p className="font-mono text-sm">spin</p>
+              </Frame>
+            </div>
+          </Card>
+
+          <Card
+            title="Pulse"
+            description="A halo that breathes in and out, for something that is live, recording or waiting."
+            item="frame-effects"
+            recipe
+            stage="dark"
+          >
+            <Frame
+              radius={999}
+              className="bg-neutral-950 px-5 py-2.5 frame-from-rose-500 frame-to-orange-400"
+            >
+              <FrameGlow pulse blur={8} spread={10} />
+              <FrameGradient />
+              <p className="flex items-center gap-2 text-sm font-medium">
+                <span className="size-2 rounded-full bg-rose-500" />
+                Recording
+              </p>
+            </Frame>
+          </Card>
+
+          <Card
+            title="Marching ants"
+            description="Dashed rules whose dashes travel around the frame, like a selection rectangle."
+            item="frame"
+            recipe
+            stage="dark"
+          >
+            <Frame className="w-full max-w-xs p-6">
+              <FrameRules dash={6} gap={4} march />
+              <FrameCorners mark="square" />
+              <p className="font-mono text-sm">march</p>
+            </Frame>
+          </Card>
+
+          <Card
+            title="On shapes"
+            description="Inside a shape frame the effect layers follow the shape instead of the rectangle."
+            item="frame-effects"
+            recipe
+            stage="dark"
+          >
+            <div className="grid w-full max-w-xs gap-6">
+              <ShapeFrame
+                corner="bevel"
+                corners={["tl", "br"]}
+                size={16}
+                fill="var(--color-neutral-950)"
+                className="p-5 frame-from-cyan-300 frame-to-violet-500"
+              >
+                <FrameGlow />
+                <FrameGradient />
+                <p className="font-mono text-sm">gradient and glow</p>
+              </ShapeFrame>
+              <ShapeFrame corner="notch" size={10} className="p-5">
+                <FrameBeam />
+                <p className="font-mono text-sm">beam</p>
+              </ShapeFrame>
+            </div>
+          </Card>
+        </Section>
+
+        <HatchDivider bleed />
+
+        <Section
           id="tailwind"
           title="Tailwind"
           lead="Every frame reads its tokens from utilities, so colour, line width and radius are ordinary classes, and they work with variants like hover and dark."
@@ -323,7 +504,7 @@ export default function Home() {
           <p className="mt-2 max-w-prose text-foreground/60">
             Not built yet. These are the categories still to come.
           </p>
-          <dl className="mt-8 grid gap-8 sm:grid-cols-3">
+          <dl className="mt-8 grid gap-8 sm:grid-cols-2">
             {ROADMAP.map(([name, text]) => (
               <Frame key={name} className="p-5">
                 <FrameRules dash={2} gap={4} />
