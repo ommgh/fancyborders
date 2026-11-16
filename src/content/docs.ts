@@ -225,6 +225,7 @@ export const COMPONENTS: ComponentDoc[] = [
       "The border, fill and drop-shadow filter follow the shape in every browser. Where border-shape is supported (Chromium 147 and later) the focus outline, box-shadow and hit area follow it too.",
       "Curved corners (round and scoop) need the CSS shape() function and fall back to a plain rectangular border without it.",
       "A shape frame is still a frame, so corner marks, fills and effect layers compose inside it.",
+      "For an outline of your own, build it with polygonPaths and pass it as path. The folder, the speech bubble and the edge frame are made this way.",
     ],
     examples: [
       {
@@ -252,6 +253,81 @@ export const COMPONENTS: ComponentDoc[] = [
       "Use a drop-shadow filter rather than box-shadow for a shadow that follows the bites in every browser.",
     ],
     api: ["TicketFrame"],
+  },
+  {
+    slug: "folder-frame",
+    title: "Folder Frame",
+    description:
+      "A folder with a tab on its top edge and a sloping shoulder down to the body.",
+    category: "shapes",
+    item: "folder-frame",
+    notes: [
+      "The tab's content goes in the tab prop. The children start below the tab, so pad them rather than the frame.",
+      "The outline is a plain polygon, so the border, fill and drop-shadow follow it in every browser.",
+    ],
+    api: ["FolderFrame"],
+  },
+  {
+    slug: "speech-bubble",
+    title: "Speech Bubble",
+    description:
+      "A rounded box with a tail on any edge. The border runs around the tail unbroken.",
+    category: "shapes",
+    item: "bubble-frame",
+    notes: [
+      "The tail is drawn inside the frame's box, and the content is kept clear of it, so a bubble takes the room its box says it does.",
+      "A negative at counts from the far end of the edge, which keeps the tail a fixed distance from the right or the bottom.",
+    ],
+    examples: [
+      {
+        demo: "bubble-chat",
+        title: "A conversation",
+        description:
+          "Tails on opposite sides, each a fixed distance from its own end.",
+      },
+    ],
+    api: ["BubbleFrame"],
+  },
+  {
+    slug: "edge-frame",
+    title: "Edge Frame",
+    description:
+      "A frame with a pattern cut into its edges: zigzag teeth, waves, scallops or the bites of a stamp.",
+    category: "shapes",
+    item: "edge-frame",
+    notes: [
+      "Each edge fits a whole number of repeats, so the pattern never ends on half a tooth. Doing that needs the frame's size, so this is a client component that measures itself; before it has, and without JavaScript, it is a plain rectangle.",
+      "Zigzags, waves and scallops stand on a line set in from the box by the depth. Give the frame at least that much padding on the patterned edges.",
+      "It is still a shape frame, so effect layers follow the pattern.",
+    ],
+    examples: [
+      {
+        demo: "edge-effects",
+        title: "With effects",
+        description:
+          "A gradient and a glow inside an edge frame take its outline.",
+        stage: "dark",
+      },
+    ],
+    api: ["EdgeFrame"],
+  },
+  {
+    slug: "receipt",
+    title: "Receipt",
+    description: "A slip of paper torn off along a zigzag edge.",
+    category: "shapes",
+    item: "edge-frame",
+    recipe: true,
+    api: ["EdgeFrame"],
+  },
+  {
+    slug: "stamp",
+    title: "Stamp",
+    description: "A postage stamp: round bites out of all four edges.",
+    category: "shapes",
+    item: "edge-frame",
+    recipe: true,
+    api: ["EdgeFrame"],
   },
 
   /* ── Lines ───────────────────────────────────────────────────────────── */

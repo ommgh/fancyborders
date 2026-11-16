@@ -79,6 +79,7 @@ const paint: Prop[] = [
 
 const LAYER = "Also accepts every div attribute, such as className and style.";
 const FRAME_PROPS = "Also accepts every Frame prop and every div attribute.";
+const SHAPE_PROPS = "Also accepts line, fill, color and every div attribute.";
 
 export const API: Record<string, ApiTable> = {
   Frame: {
@@ -434,6 +435,130 @@ export const API: Record<string, ApiTable> = {
         name: "fill",
         type: "string",
         description: "Background painted inside the shape. Any CSS background works.",
+      },
+      {
+        name: "path",
+        type: "ShapePath",
+        description:
+          "A ready-made outline from polygonPaths, in place of the corners and the punch.",
+      },
+    ],
+  },
+  FolderFrame: {
+    from: "@/components/folder-frame",
+    extends: SHAPE_PROPS,
+    props: [
+      {
+        name: "tab",
+        type: "ReactNode",
+        description: "Content of the tab, such as a label.",
+      },
+      {
+        name: "tabSide",
+        type: '"left" | "right"',
+        default: '"left"',
+        description: "Which end of the top edge the tab sits on.",
+      },
+      {
+        name: "tabWidth",
+        type: "number",
+        default: "112",
+        description: "Width of the tab's top edge, in pixels.",
+      },
+      {
+        name: "tabHeight",
+        type: "number",
+        default: "28",
+        description: "Height of the tab, in pixels.",
+      },
+      {
+        name: "slope",
+        type: "number",
+        default: "14",
+        description:
+          "How far the tab's shoulder runs sideways on its way down, in pixels.",
+      },
+      {
+        name: "radius",
+        type: "number",
+        default: "10",
+        description: "Radius of the corners, in pixels.",
+      },
+    ],
+  },
+  BubbleFrame: {
+    from: "@/components/bubble-frame",
+    extends: SHAPE_PROPS,
+    props: [
+      {
+        name: "side",
+        type: '"top" | "right" | "bottom" | "left"',
+        default: '"bottom"',
+        description: "The edge the tail points out of.",
+      },
+      {
+        name: "at",
+        type: "number | `${number}%`",
+        default: "28",
+        description:
+          "Where the tail sits along its edge: pixels from the left or top, pixels from the other end when negative, or a percentage.",
+      },
+      {
+        name: "tailSize",
+        type: "number",
+        default: "10",
+        description: "How far the tail sticks out, in pixels.",
+      },
+      {
+        name: "tailWidth",
+        type: "number",
+        default: "16",
+        description: "Width of the tail where it joins the bubble, in pixels.",
+      },
+      {
+        name: "lean",
+        type: "number",
+        default: "0",
+        description:
+          "How far the tip leans along the edge, in pixels. Negative leans back.",
+      },
+      {
+        name: "radius",
+        type: "number",
+        default: "14",
+        description: "Radius of the corners, in pixels.",
+      },
+    ],
+  },
+  EdgeFrame: {
+    from: "@/components/edge-frame",
+    extends: SHAPE_PROPS,
+    props: [
+      {
+        name: "edge",
+        type: '"zigzag" | "wave" | "scallop" | "bite"',
+        default: '"zigzag"',
+        description:
+          "The pattern cut into the edges: zigzag teeth, a wave, a scallop of round bumps, or round bites like the edge of a stamp.",
+      },
+      {
+        name: "sides",
+        type: '("top" | "right" | "bottom" | "left")[]',
+        default: "top and bottom",
+        description: "Which edges get the pattern.",
+      },
+      {
+        name: "size",
+        type: "number",
+        default: "16",
+        description:
+          "Length of one tooth, wave or bump, in pixels. Each edge fits a whole number of them, so the real length is the closest that divides it.",
+      },
+      {
+        name: "depth",
+        type: "number",
+        default: "8",
+        description: "How far the pattern reaches in from the edge, in pixels.",
       },
     ],
   },

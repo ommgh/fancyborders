@@ -7,7 +7,6 @@ import { InstallCommand } from "@/components/site/install-command";
 import { PlaygroundPreview } from "@/components/site/playground";
 import { PreviewWall } from "@/components/site/preview-wall";
 import { stageClass } from "@/components/site/stage";
-import { Frame, FrameRules } from "@/components/ui/frame";
 import {
   CATEGORIES,
   COMPONENTS,
@@ -52,13 +51,6 @@ const STEPS = [
   hover:frame-color-sky-500">`,
     lang: "tsx",
   },
-] as const;
-
-const ROADMAP = [
-  [
-    "More shapes",
-    "Folder tabs, speech bubbles, scalloped, wavy and zigzag edges.",
-  ],
 ] as const;
 
 export default function Home() {
@@ -190,24 +182,6 @@ export default function Home() {
             >
               Read the installation guide
             </Link>
-          </section>
-
-          <HatchDivider bleed />
-
-          <section id="roadmap" className="scroll-mt-20 px-6 py-16 sm:px-10">
-            <h2 className="text-2xl font-semibold tracking-tight">Roadmap</h2>
-            <p className="mt-2 max-w-prose text-foreground/60">
-              Not built yet. This is what comes next.
-            </p>
-            <dl className="mt-8 grid gap-8 sm:grid-cols-2">
-              {ROADMAP.map(([name, text]) => (
-                <Frame key={name} className="p-5">
-                  <FrameRules dash={2} gap={4} />
-                  <dt className="font-medium">{name}</dt>
-                  <dd className="mt-1 text-sm text-foreground/60">{text}</dd>
-                </Frame>
-              ))}
-            </dl>
           </section>
 
           <HatchDivider bleed />

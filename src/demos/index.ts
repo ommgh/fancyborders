@@ -2,7 +2,9 @@ import type { ComponentType } from "react";
 
 import BeamShape from "./beam-shape";
 import BeamUtilities from "./beam-utilities";
+import BubbleChat from "./bubble-chat";
 import DividerRails from "./divider-rails";
+import EdgeEffects from "./edge-effects";
 import FrameCustomMark from "./frame-custom-mark";
 import FrameTokens from "./frame-tokens";
 import GlowShape from "./glow-shape";
@@ -22,7 +24,9 @@ import ShapeVariants from "./shape-variants";
 export const DEMOS: Record<string, ComponentType> = {
   "beam-shape": BeamShape,
   "beam-utilities": BeamUtilities,
+  "bubble-chat": BubbleChat,
   "divider-rails": DividerRails,
+  "edge-effects": EdgeEffects,
   "frame-custom-mark": FrameCustomMark,
   "frame-tokens": FrameTokens,
   "glow-shape": GlowShape,

@@ -9,7 +9,15 @@ import {
 } from "./effects";
 import { blueprint, bracketFrame, crosshair, frame, hatchDivider } from "./frames";
 import { borderStyles, dashPatterns, marchingAnts } from "./lines";
-import { shapeFrame, ticketFrame } from "./shapes";
+import {
+  edgeFrame,
+  folderFrame,
+  receipt,
+  shapeFrame,
+  speechBubble,
+  stamp,
+  ticketFrame,
+} from "./shapes";
 import { pageRails, sectionGrid, sectionRule } from "./structure";
 
 /** The playground for each component page, by its slug. */
@@ -24,6 +32,11 @@ export const PLAYGROUNDS: Record<string, Playground> = {
   "section-grid": sectionGrid,
   "shape-frame": shapeFrame,
   "ticket-frame": ticketFrame,
+  "folder-frame": folderFrame,
+  "speech-bubble": speechBubble,
+  "edge-frame": edgeFrame,
+  receipt,
+  stamp,
   "dash-patterns": dashPatterns,
   "border-styles": borderStyles,
   "marching-ants": marchingAnts,

@@ -2,7 +2,7 @@
 
 Borders, frames and enclosures for React and Tailwind CSS.
 
-Copy-paste components for the edges of your interface: structural frames (corner brackets, hatched dividers and intersection marks), page structure (rails, section rules and section grids), shaped outlines (bevelled, notched and scooped corners, tickets), line styles, and effects (gradient, glow, a travelling beam, a pointer spotlight and liquid metal). Every component installs with one shadcn CLI command and is styled with Tailwind utilities.
+Copy-paste components for the edges of your interface: structural frames (corner brackets, hatched dividers and intersection marks), page structure (rails, section rules and section grids), shaped outlines (bevelled, notched and scooped corners, tickets, folders, speech bubbles, and zigzag, wavy and scalloped edges), line styles, and effects (gradient, glow, a travelling beam, a pointer spotlight and liquid metal). Every component installs with one shadcn CLI command and is styled with Tailwind utilities.
 
 **[fancyborders.vercel.app](https://fancyborders.vercel.app)** shows every component live, with controls to tune it, its install command and its props.
 
@@ -28,6 +28,9 @@ The CLI copies the component into your project, installs anything it depends on 
 | `section-rule` | A line between page sections that runs past the rails, with a mark on each intersection. |
 | `section-grid` | A grid whose cells share one line between them, with a mark on every crossing. |
 | `ticket-frame` | A ticket with rounded corners, a perforation and a tear-off stub. |
+| `folder-frame` | A folder with a tab on its top edge and a sloping shoulder. |
+| `bubble-frame` | A speech bubble: a rounded box with a tail on any edge. |
+| `edge-frame` | A frame with zigzag, wavy, scalloped or bitten edges. |
 | `frame-effects` | Effect layers in plain CSS: a gradient line, a glow, and a beam of light that travels the border. |
 | `frame-spotlight` | A light on the border that follows the pointer. |
 | `frame-metal` | Liquid metal on the border, drawn with WebGL. |
@@ -76,6 +79,44 @@ import { ShapeFrame } from "@/components/ui/shape-frame";
 <ShapeFrame corner="bevel" corners={["tl", "br"]} size={18} className="p-6 drop-shadow-lg">
   Content
 </ShapeFrame>;
+```
+
+More shapes are built on the same frame. `FolderFrame` has a tab, `BubbleFrame` a tail, and `EdgeFrame` a pattern cut into its edges:
+
+```tsx
+<FolderFrame tab="Invoices" fill="var(--background)">…</FolderFrame>
+
+<BubbleFrame side="bottom" at={28} fill="var(--background)" className="px-4 py-3">
+  Hello
+</BubbleFrame>
+
+<EdgeFrame edge="zigzag" sides={["bottom"]} fill="var(--background)" className="p-6">
+  Receipt
+</EdgeFrame>
+```
+
+`EdgeFrame` takes `zigzag`, `wave`, `scallop` or `bite`, and fits a whole number of repeats along each edge. That needs the frame's size, so it is a client component; the others render on the server.
+
+For an outline of your own, describe it as points and hand the result to a shape frame. Each point is a pixel offset from an anchor given as a percentage of the box, so the outline holds at any size. Keep the stretch between two different anchors horizontal or vertical:
+
+```tsx
+import { polygonPaths, roundCorners, ShapeFrame } from "@/components/ui/shape-frame";
+
+// A box with a V cut into the middle of its top edge.
+const notched = polygonPaths(
+  roundCorners([
+    { x: 0, y: 0, r: 6 },
+    { x: -8, y: 0, ax: 50 },
+    { x: 0, y: 8, ax: 50 },
+    { x: 8, y: 0, ax: 50 },
+    { x: 0, y: 0, ax: 100, r: 6 },
+    { x: 0, y: 0, ax: 100, ay: 100, r: 6 },
+    { x: 0, y: 0, ay: 100, r: 6 },
+  ]),
+  1,
+);
+
+<ShapeFrame path={notched} className="p-6">Content</ShapeFrame>;
 ```
 
 ## Page structure
@@ -195,7 +236,7 @@ bun run build            # registry, then the production build
 ```
 
 - Primitives live in `src/components/ui/`, presets in `src/components/`, and each primitive's CSS sits next to it.
-- A layer that needs the browser (`frame-spotlight`, `frame-metal`) is its own registry item and its own client component, so the rest stay server components.
+- Anything that needs the browser (`frame-spotlight`, `frame-metal`, `edge-frame`) is its own registry item and its own client component, so the rest stay server components.
 - `registry/items.json` lists the registry items. `scripts/build-registry.mjs` turns it into `registry.json`, converting each stylesheet into the registry's `css` field (which is how the shadcn CLI installs CSS), then `shadcn build` writes the JSON the CLI downloads. The site reads the same list to show each item's source for a manual install.
 - Install commands and registry addresses use `NEXT_PUBLIC_SITE_URL`. On Vercel they fall back to the production URL, and locally to `http://localhost:3000`.
 

@@ -104,6 +104,33 @@
     "categories": ["shapes"]
   },
   {
+    "name": "folder-frame",
+    "type": "registry:component",
+    "title": "Folder Frame",
+    "description": "A folder with a tab on its top edge and a sloping shoulder.",
+    "requires": ["shape-frame"],
+    "files": ["src/components/folder-frame.tsx"],
+    "categories": ["shapes"]
+  },
+  {
+    "name": "bubble-frame",
+    "type": "registry:component",
+    "title": "Bubble Frame",
+    "description": "A speech bubble: a rounded box with a tail on any edge.",
+    "requires": ["shape-frame"],
+    "files": ["src/components/bubble-frame.tsx"],
+    "categories": ["shapes"]
+  },
+  {
+    "name": "edge-frame",
+    "type": "registry:component",
+    "title": "Edge Frame",
+    "description": "A frame with zigzag, wavy, scalloped or bitten edges, in a whole number of repeats.",
+    "requires": ["shape-frame"],
+    "files": ["src/components/edge-frame.tsx"],
+    "categories": ["shapes"]
+  },
+  {
     "name": "beam-frame",
     "type": "registry:component",
     "title": "Beam Frame",
