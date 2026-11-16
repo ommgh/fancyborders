@@ -7,7 +7,7 @@ import { CATEGORIES, COMPONENTS, componentsIn } from "@/content/docs";
 export const metadata: Metadata = {
   title: "Components",
   description:
-    "Every fancyborders component, live: structural frames, shaped outlines, line styles and effects.",
+    "Every fancyborders component, live: structural frames, page structure, shaped outlines, line styles and effects.",
   alternates: { canonical: "/docs/components" },
 };
 

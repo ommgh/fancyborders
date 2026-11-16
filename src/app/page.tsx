@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { HatchDivider } from "@/components/hatch-divider";
+import { PageRails } from "@/components/page-rails";
 import { CodeBlock } from "@/components/site/code-block";
 import { InstallCommand } from "@/components/site/install-command";
 import { PlaygroundPreview } from "@/components/site/playground";
@@ -20,6 +21,7 @@ import { cn } from "@/lib/utils";
 /** The component that stands for each category on the landing page. */
 const FEATURED: Record<Category, string> = {
   frames: "bracket-frame",
+  structure: "section-grid",
   shapes: "shape-frame",
   lines: "marching-ants",
   effects: "glow",
@@ -54,10 +56,6 @@ const STEPS = [
 
 const ROADMAP = [
   [
-    "Page structure",
-    "Rails, section grids and intersection marks as a layout system.",
-  ],
-  [
     "More shapes",
     "Folder tabs, speech bubbles, scalloped, wavy and zigzag edges.",
   ],
@@ -77,8 +75,9 @@ export default function Home() {
           </h1>
           <p className="mt-5 max-w-lg text-lg text-foreground/60 text-pretty">
             {COMPONENTS.length} copy-paste components for the edges of your
-            interface: structural frames, shaped outlines, line styles, and
-            borders that glow, travel and turn to metal.
+            interface: structural frames, page rails and grids, shaped
+            outlines, line styles, and borders that glow, travel and turn to
+            metal.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
@@ -106,26 +105,31 @@ export default function Home() {
 
       {/* ── Below the hero: a column between two rails, as the site began. */}
       <div className="px-4 sm:px-8">
-        <Frame className="mx-auto w-full max-w-5xl">
-          <FrameRules sides={["left", "right"]} />
+        <PageRails className="mx-auto w-full max-w-5xl">
           <HatchDivider bleed />
 
           <section className="px-6 py-16 sm:px-10">
             <h2 className="text-2xl font-semibold tracking-tight">
-              Four kinds of border
+              Five kinds of border
             </h2>
             <p className="mt-2 max-w-prose text-foreground/60">
               Everything is a frame with layers inside it, so the pieces
               combine: a beam around a bevelled shape, a glow behind a ticket.
             </p>
             <div className="mt-10 grid gap-6 sm:grid-cols-2">
-              {CATEGORIES.map((category) => {
+              {CATEGORIES.map((category, index) => {
                 const featured = componentDoc(FEATURED[category.id])!;
                 return (
                   <Link
                     key={category.id}
                     href={`/docs/components#${category.id}`}
-                    className="group flex flex-col border border-foreground/10 transition-colors hover:border-foreground/30"
+                    className={cn(
+                      "group flex flex-col border border-foreground/10 transition-colors hover:border-foreground/30",
+                      // An odd one out at the end takes the whole row.
+                      index === CATEGORIES.length - 1 &&
+                        index % 2 === 0 &&
+                        "sm:col-span-2",
+                    )}
                   >
                     <div
                       className={cn(
@@ -193,7 +197,7 @@ export default function Home() {
           <section id="roadmap" className="scroll-mt-20 px-6 py-16 sm:px-10">
             <h2 className="text-2xl font-semibold tracking-tight">Roadmap</h2>
             <p className="mt-2 max-w-prose text-foreground/60">
-              Not built yet. These are the categories still to come.
+              Not built yet. This is what comes next.
             </p>
             <dl className="mt-8 grid gap-8 sm:grid-cols-2">
               {ROADMAP.map(([name, text]) => (
@@ -227,7 +231,7 @@ export default function Home() {
               </a>
             </p>
           </footer>
-        </Frame>
+        </PageRails>
       </div>
     </main>
   );

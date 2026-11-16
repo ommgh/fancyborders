@@ -49,6 +49,16 @@
     "categories": ["primitives", "effects"]
   },
   {
+    "name": "section-grid",
+    "type": "registry:ui",
+    "title": "Section Grid",
+    "description": "A grid whose cells share one line between them, with a mark on every crossing and columns that change at breakpoints.",
+    "requires": ["frame"],
+    "files": ["src/components/ui/section-grid.tsx"],
+    "css": "src/components/ui/section-grid.css",
+    "categories": ["primitives", "structure"]
+  },
+  {
     "name": "bracket-frame",
     "type": "registry:component",
     "title": "Bracket Frame",
@@ -65,6 +75,24 @@
     "requires": ["frame"],
     "files": ["src/components/hatch-divider.tsx"],
     "categories": ["frames"]
+  },
+  {
+    "name": "page-rails",
+    "type": "registry:component",
+    "title": "Page Rails",
+    "description": "The column a page is laid out in: a vertical rail down each side, optionally with a patterned gutter.",
+    "requires": ["frame"],
+    "files": ["src/components/page-rails.tsx"],
+    "categories": ["structure"]
+  },
+  {
+    "name": "section-rule",
+    "type": "registry:component",
+    "title": "Section Rule",
+    "description": "A line between page sections that runs past the page rails, with a mark on each intersection.",
+    "requires": ["frame"],
+    "files": ["src/components/section-rule.tsx"],
+    "categories": ["structure"]
   },
   {
     "name": "ticket-frame",

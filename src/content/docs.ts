@@ -4,13 +4,18 @@
  * it. Each page's live preview is defined in src/content/playgrounds.
  */
 
-export type Category = "frames" | "shapes" | "lines" | "effects";
+export type Category = "frames" | "structure" | "shapes" | "lines" | "effects";
 
 export const CATEGORIES: { id: Category; title: string; lead: string }[] = [
   {
     id: "frames",
     title: "Frames",
     lead: "Structural frames: brackets, rails, marks and hatching.",
+  },
+  {
+    id: "structure",
+    title: "Structure",
+    lead: "Rails, rules and section grids that lay out a whole page.",
   },
   {
     id: "shapes",
@@ -133,6 +138,79 @@ export const COMPONENTS: ComponentDoc[] = [
     item: "frame",
     recipe: true,
     api: ["FrameFill", "FrameBorder", "FrameCorners"],
+  },
+
+  /* ── Structure ───────────────────────────────────────────────────────── */
+  {
+    slug: "page-rails",
+    title: "Page Rails",
+    description:
+      "The column a page is laid out in: a vertical rail down each side, optionally with a patterned gutter.",
+    category: "structure",
+    item: "page-rails",
+    notes: [
+      "Everything inside sits flush with the rails, so pad your sections rather than the column. That is what lets a rule, a divider or a grid meet the rails exactly.",
+      "With bleed set to true the rails run a full viewport height past each end. The page then needs overflow-y: clip on an ancestor.",
+    ],
+    examples: [
+      {
+        demo: "page-layout",
+        title: "A whole page",
+        description:
+          "Rails, section rules and a section grid together. The rules cross the rails, and the grid's lines stop at them.",
+      },
+    ],
+    api: ["PageRails"],
+  },
+  {
+    slug: "section-rule",
+    title: "Section Rule",
+    description:
+      "A line between page sections that runs past the page rails, with a mark on each intersection.",
+    category: "structure",
+    item: "section-rule",
+    notes: [
+      "Set bleed to true to run the line a full viewport width each way. The page then needs overflow-x: clip on an ancestor.",
+      "The rule is as tall as the frame's line, so frame-line-2 thickens it. For a band rather than a line, use the hatch divider.",
+    ],
+    examples: [
+      {
+        demo: "rule-styles",
+        title: "Dashes and other marks",
+        description:
+          "A rule takes a dash pattern and any corner mark, or none.",
+      },
+    ],
+    api: ["SectionRule"],
+  },
+  {
+    slug: "section-grid",
+    title: "Section Grid",
+    description:
+      "A grid whose cells share one line between them, with a mark on every crossing and columns that change at breakpoints.",
+    category: "structure",
+    item: "section-grid",
+    notes: [
+      "Set the columns with section-cols-1 to section-cols-8 rather than grid-cols-*. The grid counts its cells to find the last column and the last row, which is how it draws every line once and none on its outer edge.",
+      "Every direct child is a cell. The lines are each cell's ::after and the marks its ::before, and cells are given position: relative.",
+      "The counting assumes one track per cell. On a cell that spans, set --fb-cell-right and --fb-cell-bottom to 1 or 0 to say whether it has a line to its right and beneath it.",
+      "Directly inside page rails the grid stops at the rails instead of crossing them.",
+    ],
+    examples: [
+      {
+        demo: "grid-responsive",
+        title: "Columns at breakpoints",
+        description:
+          "The column utilities take variants. When the last row is not full, the space left over stays open.",
+      },
+      {
+        demo: "grid-hover",
+        title: "Cells as links",
+        description:
+          "Lines sit in the gaps between cells, so a background on a cell never covers them.",
+      },
+    ],
+    api: ["SectionGrid"],
   },
 
   /* ── Shapes ──────────────────────────────────────────────────────────── */

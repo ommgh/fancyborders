@@ -8,6 +8,10 @@ import FrameTokens from "./frame-tokens";
 import GlowShape from "./glow-shape";
 import GradientComet from "./gradient-comet";
 import GradientUtilities from "./gradient-utilities";
+import GridHover from "./grid-hover";
+import GridResponsive from "./grid-responsive";
+import PageLayout from "./page-layout";
+import RuleStyles from "./rule-styles";
 import ShapeMixed from "./shape-mixed";
 import ShapeVariants from "./shape-variants";
 
@@ -24,6 +28,10 @@ export const DEMOS: Record<string, ComponentType> = {
   "glow-shape": GlowShape,
   "gradient-comet": GradientComet,
   "gradient-utilities": GradientUtilities,
+  "grid-hover": GridHover,
+  "grid-responsive": GridResponsive,
+  "page-layout": PageLayout,
+  "rule-styles": RuleStyles,
   "shape-mixed": ShapeMixed,
   "shape-variants": ShapeVariants,
 };

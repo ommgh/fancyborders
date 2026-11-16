@@ -1,0 +1,249 @@
+/*
+ * Section grid.
+ *
+ * A grid whose cells share one line between them. Each cell draws the line
+ * to its right and the line beneath it, in the gap, so no line is ever drawn
+ * twice and none is drawn on the grid's outer edge. The cells on the last
+ * column and the last row are found by counting, which is why the column
+ * count comes from a `section-cols-*` utility rather than `grid-cols-*`.
+ *
+ * Lines are the cell's ::after and marks its ::before.
+ */
+
+@layer components {
+  .fb-grid {
+    --fb-columns: 1;
+
+    display: grid;
+    grid-template-columns: repeat(var(--fb-columns), minmax(0, 1fr));
+    gap: var(--fb-line);
+  }
+
+  .fb-grid[data-outline] {
+    border: var(--fb-line) var(--fb-border-style, solid) var(--fb-line-color);
+  }
+
+  /* Between page rails the grid stops at the rails instead of crossing them. */
+  [data-slot="page-rails"] > .fb-grid {
+    margin-inline: var(--fb-line);
+  }
+
+  /*
+   * Whether a cell has a line to its right and beneath it: 1 or 0. One
+   * column until a section-cols-* utility says otherwise. Set them on a
+   * cell yourself when it spans tracks and the counting no longer holds.
+   */
+  .fb-grid > * {
+    --fb-cell-right: 0;
+    --fb-cell-bottom: 1;
+
+    position: relative;
+  }
+  .fb-grid > :last-child {
+    --fb-cell-bottom: 0;
+  }
+
+  .fb-grid > ::after {
+    content: "";
+    position: absolute;
+    inset: 0 calc(var(--fb-line) * var(--fb-cell-right) * -1)
+      calc(var(--fb-line) * var(--fb-cell-bottom) * -1) 0;
+    border: 0 var(--fb-border-style, solid) var(--fb-line-color);
+    border-right-width: calc(var(--fb-line) * var(--fb-cell-right));
+    border-bottom-width: calc(var(--fb-line) * var(--fb-cell-bottom));
+    pointer-events: none;
+  }
+
+  /* ── Marks ──────────────────────────────────────────────────────────── */
+
+  /* One on every crossing: where a cell has both of its lines. */
+  .fb-grid[data-mark] > ::before {
+    --_line: var(--fb-mark-line, var(--fb-line));
+
+    content: "";
+    position: absolute;
+    right: calc((var(--fb-line) + var(--fb-mark-size)) / -2);
+    bottom: calc((var(--fb-line) + var(--fb-mark-size)) / -2);
+    /* Above the neighbouring cells, which the mark overlaps. */
+    z-index: 1;
+    box-sizing: border-box;
+    width: var(--fb-mark-size);
+    height: var(--fb-mark-size);
+    color: var(
+      --fb-mark-color,
+      color-mix(in oklab, currentColor 45%, var(--fb-surface))
+    );
+    opacity: calc(var(--fb-cell-right) * var(--fb-cell-bottom));
+    pointer-events: none;
+  }
+
+  /* Keep (mark size - line width) even and the marks stay pixel-crisp. */
+  .fb-grid[data-mark="plus"] {
+    --fb-mark-size: 11px;
+  }
+  .fb-grid[data-mark="square"] {
+    --fb-mark-size: 7px;
+  }
+  .fb-grid[data-mark="dot"] {
+    --fb-mark-size: 5px;
+  }
+
+  .fb-grid[data-mark="plus"] > ::before {
+    background:
+      linear-gradient(currentColor, currentColor) center / 100% var(--_line)
+        no-repeat,
+      linear-gradient(currentColor, currentColor) center / var(--_line) 100%
+        no-repeat;
+  }
+
+  .fb-grid[data-mark="square"] > ::before {
+    border: var(--_line) solid currentColor;
+    background: var(--fb-surface);
+  }
+
+  .fb-grid[data-mark="dot"] > ::before {
+    border-radius: 50%;
+    background: currentColor;
+  }
+}
+
+/*
+ * Column counts, one to eight. Each takes variants, so a grid can change
+ * its columns at a breakpoint:
+ *
+ *   <SectionGrid className="section-cols-1 sm:section-cols-2 lg:section-cols-3">
+ *
+ * Every selector has the same specificity, so the utility for the widest
+ * matching breakpoint, which comes last in the stylesheet, decides. The
+ * first rule clears what a narrower one set. The second finds the last
+ * column. The third finds the cell that starts the last row, and everything
+ * after it.
+ */
+
+@utility section-cols-1 {
+  --fb-columns: 1;
+
+  & > :nth-child(n):nth-child(n) {
+    --fb-cell-right: 1;
+    --fb-cell-bottom: 1;
+  }
+  & > :nth-child(1n):nth-child(n) {
+    --fb-cell-right: 0;
+  }
+  & > :nth-child(1n + 1):nth-last-child(-n + 1),
+  & > :nth-child(1n + 1):nth-last-child(-n + 1) ~ * {
+    --fb-cell-bottom: 0;
+  }
+}
+
+@utility section-cols-2 {
+  --fb-columns: 2;
+
+  & > :nth-child(n):nth-child(n) {
+    --fb-cell-right: 1;
+    --fb-cell-bottom: 1;
+  }
+  & > :nth-child(2n):nth-child(n) {
+    --fb-cell-right: 0;
+  }
+  & > :nth-child(2n + 1):nth-last-child(-n + 2),
+  & > :nth-child(2n + 1):nth-last-child(-n + 2) ~ * {
+    --fb-cell-bottom: 0;
+  }
+}
+
+@utility section-cols-3 {
+  --fb-columns: 3;
+
+  & > :nth-child(n):nth-child(n) {
+    --fb-cell-right: 1;
+    --fb-cell-bottom: 1;
+  }
+  & > :nth-child(3n):nth-child(n) {
+    --fb-cell-right: 0;
+  }
+  & > :nth-child(3n + 1):nth-last-child(-n + 3),
+  & > :nth-child(3n + 1):nth-last-child(-n + 3) ~ * {
+    --fb-cell-bottom: 0;
+  }
+}
+
+@utility section-cols-4 {
+  --fb-columns: 4;
+
+  & > :nth-child(n):nth-child(n) {
+    --fb-cell-right: 1;
+    --fb-cell-bottom: 1;
+  }
+  & > :nth-child(4n):nth-child(n) {
+    --fb-cell-right: 0;
+  }
+  & > :nth-child(4n + 1):nth-last-child(-n + 4),
+  & > :nth-child(4n + 1):nth-last-child(-n + 4) ~ * {
+    --fb-cell-bottom: 0;
+  }
+}
+
+@utility section-cols-5 {
+  --fb-columns: 5;
+
+  & > :nth-child(n):nth-child(n) {
+    --fb-cell-right: 1;
+    --fb-cell-bottom: 1;
+  }
+  & > :nth-child(5n):nth-child(n) {
+    --fb-cell-right: 0;
+  }
+  & > :nth-child(5n + 1):nth-last-child(-n + 5),
+  & > :nth-child(5n + 1):nth-last-child(-n + 5) ~ * {
+    --fb-cell-bottom: 0;
+  }
+}
+
+@utility section-cols-6 {
+  --fb-columns: 6;
+
+  & > :nth-child(n):nth-child(n) {
+    --fb-cell-right: 1;
+    --fb-cell-bottom: 1;
+  }
+  & > :nth-child(6n):nth-child(n) {
+    --fb-cell-right: 0;
+  }
+  & > :nth-child(6n + 1):nth-last-child(-n + 6),
+  & > :nth-child(6n + 1):nth-last-child(-n + 6) ~ * {
+    --fb-cell-bottom: 0;
+  }
+}
+
+@utility section-cols-7 {
+  --fb-columns: 7;
+
+  & > :nth-child(n):nth-child(n) {
+    --fb-cell-right: 1;
+    --fb-cell-bottom: 1;
+  }
+  & > :nth-child(7n):nth-child(n) {
+    --fb-cell-right: 0;
+  }
+  & > :nth-child(7n + 1):nth-last-child(-n + 7),
+  & > :nth-child(7n + 1):nth-last-child(-n + 7) ~ * {
+    --fb-cell-bottom: 0;
+  }
+}
+
+@utility section-cols-8 {
+  --fb-columns: 8;
+
+  & > :nth-child(n):nth-child(n) {
+    --fb-cell-right: 1;
+    --fb-cell-bottom: 1;
+  }
+  & > :nth-child(8n):nth-child(n) {
+    --fb-cell-right: 0;
+  }
+  & > :nth-child(8n + 1):nth-last-child(-n + 8),
+  & > :nth-child(8n + 1):nth-last-child(-n + 8) ~ * {
+    --fb-cell-bottom: 0;
+  }
+}

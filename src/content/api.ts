@@ -295,6 +295,106 @@ export const API: Record<string, ApiTable> = {
       },
     ],
   },
+  PageRails: {
+    from: "@/components/page-rails",
+    extends: FRAME_PROPS,
+    props: [
+      {
+        name: "bleed",
+        type: "boolean | number | string",
+        default: "false",
+        description:
+          "How far the rails run past the top and bottom of the column. true runs them a full viewport height each way.",
+      },
+      {
+        name: "gutter",
+        type: "number | string",
+        description:
+          "Width of a gutter down each side. A second pair of rails is drawn this far inside the first, and the content sits between the inner pair.",
+      },
+      {
+        name: "fill",
+        type: '"hatch" | "cross" | "dots" | "grid"',
+        description: "Pattern drawn in the gutters.",
+      },
+      {
+        name: "dash",
+        type: "number | string",
+        default: "4",
+        description: "Dash length. Setting dash or gap makes the rails dashed.",
+      },
+      {
+        name: "gap",
+        type: "number | string",
+        default: "4",
+        description: "Space between dashes.",
+      },
+    ],
+  },
+  SectionRule: {
+    from: "@/components/section-rule",
+    extends: FRAME_PROPS,
+    props: [
+      {
+        name: "bleed",
+        type: "boolean | number | string",
+        default: "false",
+        description:
+          "How far the line runs past each end. true runs it a full viewport width each way.",
+      },
+      {
+        name: "mark",
+        type: '"bracket" | "square" | "plus" | "dot" | false',
+        default: '"square"',
+        description: "Mark drawn on each end of the line.",
+      },
+      {
+        name: "dash",
+        type: "number | string",
+        default: "4",
+        description: "Dash length. Setting dash or gap makes the line dashed.",
+      },
+      {
+        name: "gap",
+        type: "number | string",
+        default: "4",
+        description: "Space between dashes.",
+      },
+    ],
+  },
+  SectionGrid: {
+    from: "@/components/ui/section-grid",
+    extends:
+      FRAME_PROPS +
+      " Set the columns with a class from section-cols-1 to section-cols-8.",
+    props: [
+      {
+        name: "variant",
+        type: '"solid" | "dashed" | "dotted"',
+        default: '"solid"',
+        description: "Line style of the lines between cells, and of the outline.",
+      },
+      {
+        name: "mark",
+        type: '"plus" | "square" | "dot" | false',
+        default: "false",
+        description: "Mark drawn on every crossing of two lines.",
+      },
+      {
+        name: "markSize",
+        type: "number | string",
+        default: "11, 7 or 5",
+        description:
+          "Width and height of each mark. The default depends on the mark: plus, square, dot.",
+      },
+      {
+        name: "outline",
+        type: "boolean",
+        default: "false",
+        description: "Draw a border around the whole grid as well.",
+      },
+    ],
+  },
   ShapeFrame: {
     from: "@/components/ui/shape-frame",
     extends: "Also accepts every Frame prop except radius, and every div attribute.",

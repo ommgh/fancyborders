@@ -10,6 +10,7 @@ import {
 import { blueprint, bracketFrame, crosshair, frame, hatchDivider } from "./frames";
 import { borderStyles, dashPatterns, marchingAnts } from "./lines";
 import { shapeFrame, ticketFrame } from "./shapes";
+import { pageRails, sectionGrid, sectionRule } from "./structure";
 
 /** The playground for each component page, by its slug. */
 export const PLAYGROUNDS: Record<string, Playground> = {
@@ -18,6 +19,9 @@ export const PLAYGROUNDS: Record<string, Playground> = {
   "hatch-divider": hatchDivider,
   crosshair,
   blueprint,
+  "page-rails": pageRails,
+  "section-rule": sectionRule,
+  "section-grid": sectionGrid,
   "shape-frame": shapeFrame,
   "ticket-frame": ticketFrame,
   "dash-patterns": dashPatterns,

@@ -2,7 +2,7 @@
 
 Borders, frames and enclosures for React and Tailwind CSS.
 
-Copy-paste components for the edges of your interface: structural frames (corner brackets, hatched dividers, rails and intersection marks), shaped outlines (bevelled, notched and scooped corners, tickets), line styles, and effects (gradient, glow, a travelling beam, a pointer spotlight and liquid metal). Every component installs with one shadcn CLI command and is styled with Tailwind utilities.
+Copy-paste components for the edges of your interface: structural frames (corner brackets, hatched dividers and intersection marks), page structure (rails, section rules and section grids), shaped outlines (bevelled, notched and scooped corners, tickets), line styles, and effects (gradient, glow, a travelling beam, a pointer spotlight and liquid metal). Every component installs with one shadcn CLI command and is styled with Tailwind utilities.
 
 **[fancyborders.vercel.app](https://fancyborders.vercel.app)** shows every component live, with controls to tune it, its install command and its props.
 
@@ -24,6 +24,9 @@ The CLI copies the component into your project, installs anything it depends on 
 | `shape-frame` | A frame whose outline follows a shape: bevel, notch, scoop or round corners, and punched edges. |
 | `bracket-frame` | Corner brackets around a dashed border. |
 | `hatch-divider` | A hatched band for separating page sections, with marks where it meets the page rails. |
+| `page-rails` | The column a page is laid out in: a vertical rail down each side, optionally with a patterned gutter. |
+| `section-rule` | A line between page sections that runs past the rails, with a mark on each intersection. |
+| `section-grid` | A grid whose cells share one line between them, with a mark on every crossing. |
 | `ticket-frame` | A ticket with rounded corners, a perforation and a tear-off stub. |
 | `frame-effects` | Effect layers in plain CSS: a gradient line, a glow, and a beam of light that travels the border. |
 | `frame-spotlight` | A light on the border that follows the pointer. |
@@ -74,6 +77,34 @@ import { ShapeFrame } from "@/components/ui/shape-frame";
   Content
 </ShapeFrame>;
 ```
+
+## Page structure
+
+Three components lay out a whole page on the same lines. `PageRails` is the column, `SectionRule` separates its sections, and `SectionGrid` divides one into cells:
+
+```tsx
+import { PageRails } from "@/components/page-rails";
+import { SectionRule } from "@/components/section-rule";
+import { SectionGrid } from "@/components/ui/section-grid";
+
+<div className="overflow-x-clip">
+  <PageRails className="mx-auto max-w-5xl">
+    <header className="p-10">…</header>
+    <SectionRule bleed />
+    <SectionGrid mark="plus" className="section-cols-1 sm:section-cols-3">
+      <div className="p-8">One</div>
+      <div className="p-8">Two</div>
+      <div className="p-8">Three</div>
+    </SectionGrid>
+    <SectionRule bleed />
+    <footer className="p-10">…</footer>
+  </PageRails>
+</div>;
+```
+
+Everything inside the rails sits flush with them, so pad the sections rather than the column. A rule crosses the rails and puts a mark on each intersection; with `bleed` it runs on to the page edges. A section grid draws each line between its cells once and none on its outer edge, so it meets the rails and the rules around it exactly. Pass `outline` to use one on its own.
+
+Set a grid's columns with `section-cols-1` to `section-cols-8` rather than `grid-cols-*`: the grid counts its cells to find its last column and last row. The utilities take variants, so the columns can change at a breakpoint.
 
 ## Effects
 
@@ -141,11 +172,12 @@ Frames read their colours and sizes from custom properties, and each one has a u
 | `frame-surface-*` | Colour painted behind hollow marks |
 | `frame-bg-*` | Background inside a shape frame |
 | `frame-from-*`, `frame-via-*`, `frame-to-*` | Colours of the effect layers |
+| `section-cols-*` | Columns of a section grid, from 1 to 8 |
 | `frame-duration-*` | Time for one turn of a gradient or one lap of a beam, in milliseconds |
 
 ## Browser support
 
-Structural frames use only widely supported CSS (gradients, custom properties and `color-mix()`).
+Structural frames and page structure use only widely supported CSS (gradients, custom properties and `color-mix()`).
 
 Shape frames draw their outline with `clip-path`, so the border, fill and `drop-shadow` follow the shape everywhere. Where the newer [`border-shape`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/border-shape) property is supported (Chromium 147 and later), the focus outline and `box-shadow` follow the shape too. Curved corners (`round` and `scoop`) need the CSS `shape()` function and fall back to a plain rectangular border without it.
 
