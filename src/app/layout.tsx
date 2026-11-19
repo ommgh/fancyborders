@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata, Viewport } from "next";
 import { Geist_Mono, Instrument_Sans, Instrument_Serif } from "next/font/google";
 
@@ -40,6 +41,13 @@ export const metadata: Metadata = {
   openGraph: {
     siteName: SITE_NAME,
     type: "website",
+    title: `${SITE_NAME}: ${SITE_TAGLINE}`,
+    description,
+    url: "/",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${SITE_NAME}: ${SITE_TAGLINE}`,
     description,
   },
 };
@@ -78,6 +86,9 @@ export default function RootLayout({
             </PageRails>
           </div>
         </ThemeProvider>
+        {/* Vercel Web Analytics: cookie-free page views, only on Vercel
+            deployments. Swap for Google Analytics once there is a domain. */}
+        <Analytics />
       </body>
     </html>
   );
