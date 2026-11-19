@@ -1,5 +1,8 @@
 "use client";
 
+import { Select } from "@base-ui/react/select";
+import { Slider } from "@base-ui/react/slider";
+import { Switch } from "@base-ui/react/switch";
 import { useState } from "react";
 
 import { CopyButton } from "@/components/site/copy-button";
@@ -127,6 +130,10 @@ function LiveCode({ code, className }: { code: string; className?: string }) {
 
 type Value = Values[string];
 
+/*
+ * The controls are Base UI's slider, select and switch, styled to match the
+ * rounded panels around them rather than the browser's own widgets.
+ */
 function ControlRow({
   control,
   value,
@@ -136,79 +143,109 @@ function ControlRow({
   value: Value;
   onChange: (value: Value) => void;
 }) {
-  const row = "flex min-h-9 items-center gap-3 text-sm";
-  const name = <span className="w-28 shrink-0 text-foreground/70">{control.label}</span>;
+  const row = "flex min-h-10 items-center gap-3 text-sm";
+  const name = <span className="w-28 shrink-0 text-foreground/75">{control.label}</span>;
 
   switch (control.type) {
     case "range":
       return (
-        <label className={row}>
+        <div className={row}>
           {name}
-          <input
-            type="range"
+          <Slider.Root
+            value={Number(value)}
             min={control.min}
             max={control.max}
             step={control.step ?? 1}
-            value={Number(value)}
-            onChange={(event) => onChange(Number(event.target.value))}
-            className="h-1 min-w-0 flex-1 cursor-pointer accent-foreground"
-          />
-          <span className="w-14 shrink-0 text-right font-mono text-xs text-muted tabular-nums">
+            onValueChange={(next) => onChange(Array.isArray(next) ? next[0] : next)}
+            aria-label={control.label}
+            className="min-w-0 flex-1"
+          >
+            <Slider.Control className="flex h-5 cursor-pointer touch-none items-center">
+              <Slider.Track className="relative h-1.5 w-full rounded-full bg-foreground/10">
+                <Slider.Indicator className="rounded-full bg-foreground/70" />
+                <Slider.Thumb className="size-4 rounded-full border border-line bg-surface shadow-[0_1px_3px_rgb(0_0_0/0.18)] transition-[scale,box-shadow] duration-150 outline-none hover:scale-110 focus-visible:ring-3 focus-visible:ring-foreground/15 data-[dragging]:scale-110" />
+              </Slider.Track>
+            </Slider.Control>
+          </Slider.Root>
+          <span className="w-12 shrink-0 text-right font-mono text-xs text-muted tabular-nums">
             {String(value)}
             {control.unit}
           </span>
-        </label>
+        </div>
       );
 
     case "select":
       return (
-        <label className={row}>
+        <div className={row}>
           {name}
-          <select
-            value={String(value)}
-            onChange={(event) => onChange(event.target.value)}
-            className="min-w-0 flex-1 cursor-pointer border border-line bg-background px-2 py-1 font-mono text-xs"
-          >
-            {control.options.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-        </label>
+          <Select.Root value={String(value)} onValueChange={(next) => next !== null && onChange(next)}>
+            <Select.Trigger
+              aria-label={control.label}
+              className="flex h-8 min-w-0 flex-1 cursor-pointer items-center justify-between gap-2 rounded-lg border border-line bg-background pr-2 pl-3 font-mono text-xs transition-colors outline-none hover:border-foreground/20 focus-visible:ring-3 focus-visible:ring-foreground/10 data-[popup-open]:border-foreground/20"
+            >
+              <Select.Value className="truncate" />
+              <Select.Icon className="text-muted">
+                <svg viewBox="0 0 16 16" aria-hidden className="size-3.5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="m5 6.5 3-3 3 3M5 9.5l3 3 3-3" />
+                </svg>
+              </Select.Icon>
+            </Select.Trigger>
+            <Select.Portal>
+              <Select.Positioner sideOffset={6} alignItemWithTrigger={false} className="z-50 outline-none">
+                <Select.Popup className="min-w-(--anchor-width) origin-(--transform-origin) rounded-xl border border-line bg-surface p-1 shadow-lg shadow-black/10 transition-[opacity,scale] duration-150 ease-out outline-none data-[ending-style]:scale-95 data-[ending-style]:opacity-0 data-[starting-style]:scale-95 data-[starting-style]:opacity-0">
+                  {control.options.map((option) => (
+                    <Select.Item
+                      key={option}
+                      value={option}
+                      className="flex h-8 cursor-pointer items-center justify-between gap-4 rounded-lg px-2.5 font-mono text-xs outline-none select-none data-[highlighted]:bg-foreground/[0.07]"
+                    >
+                      <Select.ItemText>{option}</Select.ItemText>
+                      <Select.ItemIndicator>
+                        <svg viewBox="0 0 16 16" aria-hidden className="size-3.5" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="m3.5 8.5 3 3 6-7" />
+                        </svg>
+                      </Select.ItemIndicator>
+                    </Select.Item>
+                  ))}
+                </Select.Popup>
+              </Select.Positioner>
+            </Select.Portal>
+          </Select.Root>
+        </div>
       );
 
     case "toggle":
       return (
-        <label className={cn(row, "cursor-pointer")}>
+        <div className={row}>
           {name}
           <span className="flex-1" />
-          <input
-            type="checkbox"
+          <Switch.Root
             checked={Boolean(value)}
-            onChange={(event) => onChange(event.target.checked)}
-            className="peer sr-only"
-          />
-          <span className="relative h-5 w-9 shrink-0 bg-foreground/15 transition-colors peer-checked:bg-foreground peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-foreground peer-checked:[&>span]:translate-x-4">
-            <span className="absolute top-0.5 left-0.5 size-4 bg-background transition-transform" />
-          </span>
-        </label>
+            onCheckedChange={(checked) => onChange(checked)}
+            aria-label={control.label}
+            className="relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full bg-foreground/15 p-0.5 transition-colors duration-200 outline-none focus-visible:ring-3 focus-visible:ring-foreground/15 data-[checked]:bg-foreground/80"
+          >
+            <Switch.Thumb className="size-4 rounded-full bg-surface shadow-[0_1px_2px_rgb(0_0_0/0.2)] transition-transform duration-200 ease-[cubic-bezier(0.215,0.61,0.355,1)] data-[checked]:translate-x-4" />
+          </Switch.Root>
+        </div>
       );
 
     case "color":
       return (
-        <label className={row}>
+        <label className={cn(row, "cursor-pointer")}>
           {name}
           <span className="flex-1" />
-          <span className="font-mono text-xs text-muted">
-            {String(value)}
+          <span className="font-mono text-xs text-muted">{String(value)}</span>
+          <span className="relative size-6 shrink-0 overflow-hidden rounded-full border border-line shadow-[0_1px_2px_rgb(0_0_0/0.08)]">
+            <span className="absolute inset-0" style={{ background: String(value) }} />
+            <input
+              type="color"
+              value={String(value)}
+              onChange={(event) => onChange(event.target.value)}
+              aria-label={control.label}
+              className="absolute inset-0 size-full cursor-pointer opacity-0"
+            />
           </span>
-          <input
-            type="color"
-            value={String(value)}
-            onChange={(event) => onChange(event.target.value)}
-            className="size-6 shrink-0 cursor-pointer border border-line bg-transparent p-0"
-          />
         </label>
       );
   }
