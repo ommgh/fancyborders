@@ -1,0 +1,378 @@
+<!doctype html>
+<!--
+  The GitHub social preview (Settings → Social preview). Render with:
+
+    for t in light dark; do
+      chromium --headless --hide-scrollbars --force-device-scale-factor=1 \
+        --window-size=1280,640 --virtual-time-budget=6000 \
+        --screenshot=".github/assets/social-preview$([ $t = dark ] && echo -dark).png" \
+        "file://$PWD/.github/assets/social-preview.html?theme=$t"
+    done
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>fancyborders social preview</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif:ital@1&display=block"
+    />
+    <style>
+      /* The site's tokens, light and dark. */
+      :root {
+        --background: oklch(0.975 0 0);
+        --foreground: oklch(0.27 0 0);
+        --muted: oklch(0.52 0 0);
+        --surface: oklch(0.99 0 0);
+        --line: oklch(0.905 0 0);
+        --mark: color-mix(in oklab, var(--foreground) 45%, var(--surface));
+        --dash: color-mix(in oklab, var(--foreground) 30%, transparent);
+        --halo: 0.6;
+      }
+      :root.dark {
+        --background: oklch(0.178 0 0);
+        --foreground: oklch(0.92 0 0);
+        --muted: oklch(0.66 0 0);
+        --surface: oklch(0.205 0 0);
+        --line: oklch(0.275 0 0);
+        --halo: 0.75;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+
+      html,
+      body {
+        width: 1280px;
+        height: 640px;
+        overflow: hidden;
+      }
+
+      body {
+        position: relative;
+        background: var(--background);
+        color: var(--foreground);
+        font-family: "Instrument Sans", system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* ── The page's lines: rails, rules and the marks where they cross ── */
+
+      .h,
+      .v {
+        position: absolute;
+        background: var(--line);
+      }
+      .h {
+        left: 0;
+        right: 0;
+        height: 1px;
+      }
+      .v {
+        top: 0;
+        bottom: 0;
+        width: 1px;
+      }
+      .mark {
+        position: absolute;
+        width: 9px;
+        height: 9px;
+        margin: -4px 0 0 -4px;
+        background: var(--background);
+        border: 1px solid var(--mark);
+        z-index: 2;
+      }
+
+      /* ── Top: the name and the pitch ──────────────────────────────── */
+
+      .pitch {
+        position: absolute;
+        left: 57px;
+        top: 57px;
+        width: 1167px;
+        height: 287px;
+        padding: 44px 56px 40px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .brand svg {
+        width: 40px;
+        height: 40px;
+      }
+      .brand span {
+        font-family: "Instrument Serif", serif;
+        font-style: italic;
+        font-size: 54px;
+        line-height: 1;
+        letter-spacing: -0.01em;
+        margin-bottom: -6px;
+      }
+
+      .url {
+        font-family: "Geist Mono", ui-monospace, monospace;
+        font-size: 16px;
+        color: var(--muted);
+      }
+
+      h1 {
+        margin-top: auto;
+        font-size: 76px;
+        font-weight: 600;
+        line-height: 1;
+        letter-spacing: -0.045em;
+      }
+
+      .foot {
+        margin-top: 20px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        font-family: "Geist Mono", ui-monospace, monospace;
+        font-size: 18px;
+        color: var(--muted);
+      }
+      .chip {
+        padding: 6px 11px;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: var(--surface);
+        color: var(--foreground);
+        font-size: 16px;
+      }
+
+      /* ── Bottom: a section grid with a component in each cell ────────── */
+
+      .grid {
+        position: absolute;
+        left: 57px;
+        top: 345px;
+        width: 1167px;
+        height: 239px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .cell {
+        display: grid;
+        place-items: center;
+        position: relative;
+        font-family: "Geist Mono", ui-monospace, monospace;
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      /* The cells are larger than the banner's, so the pieces are too. */
+      .cell > * {
+        zoom: 1.3;
+      }
+
+      /* Bracket frame: corner brackets around a dashed border. */
+      .bracket {
+        position: relative;
+        width: 150px;
+        height: 96px;
+        padding: 10px;
+      }
+      .bracket::before {
+        content: "";
+        position: absolute;
+        inset: 9px;
+        border: 1px dashed var(--dash);
+      }
+      .bracket i {
+        position: absolute;
+        width: 14px;
+        height: 14px;
+        border: 0 solid var(--foreground);
+      }
+      .bracket i:nth-child(1) { top: 0; left: 0; border-width: 2px 0 0 2px; }
+      .bracket i:nth-child(2) { top: 0; right: 0; border-width: 2px 2px 0 0; }
+      .bracket i:nth-child(3) { bottom: 0; right: 0; border-width: 0 2px 2px 0; }
+      .bracket i:nth-child(4) { bottom: 0; left: 0; border-width: 0 0 2px 2px; }
+      .bracket .dots {
+        position: absolute;
+        inset: 18px;
+        background-image: radial-gradient(var(--dash) 1px, transparent 1.2px);
+        background-size: 10px 10px;
+        opacity: 0.8;
+      }
+
+      /* Glow: a gradient ring with a halo of the same colours. */
+      .glow {
+        --stops: #7e9be9, #b593dc, #e4a5a4, #7e9be9;
+        position: relative;
+        isolation: isolate;
+        width: 150px;
+        padding: 16px 18px;
+        border-radius: 12px;
+        background: var(--surface);
+        color: var(--foreground);
+        font-family: "Instrument Sans", sans-serif;
+        font-size: 15px;
+        font-weight: 500;
+      }
+      .glow small {
+        display: block;
+        margin-top: 3px;
+        font-family: "Geist Mono", monospace;
+        font-size: 11px;
+        font-weight: 400;
+        color: var(--muted);
+      }
+      .glow::before,
+      .halo::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background: conic-gradient(from 200deg in oklab, var(--stops));
+        mask-image: linear-gradient(#000 0 0), linear-gradient(#000 0 0);
+        mask-clip: content-box, border-box;
+        mask-composite: exclude;
+      }
+      .glow::before {
+        padding: 1.5px;
+      }
+      /* The blur goes on the layer and the ring on its pseudo-element: a
+         mask applies after a filter, so masking the blurred layer itself
+         would cut the halo off. */
+      .halo {
+        position: absolute;
+        inset: -7px;
+        border-radius: 18px;
+        filter: blur(10px);
+        opacity: var(--halo);
+        z-index: -1;
+      }
+      .halo::before {
+        padding: 14px;
+      }
+
+      /* Shape frame: bevelled corners, with a champagne-to-rose line. */
+      .shape {
+        width: 150px;
+        height: 84px;
+      }
+
+      /* Marching ants: a dashed selection with handles. */
+      .select {
+        position: relative;
+        width: 150px;
+        height: 80px;
+        display: grid;
+        place-items: center;
+        background:
+          repeating-linear-gradient(90deg, var(--foreground) 0 6px, transparent 0 10px) top / 100% 1px no-repeat,
+          repeating-linear-gradient(90deg, var(--foreground) 0 6px, transparent 0 10px) bottom / 100% 1px no-repeat,
+          repeating-linear-gradient(180deg, var(--foreground) 0 6px, transparent 0 10px) left / 1px 100% no-repeat,
+          repeating-linear-gradient(180deg, var(--foreground) 0 6px, transparent 0 10px) right / 1px 100% no-repeat;
+      }
+      .select i {
+        position: absolute;
+        width: 7px;
+        height: 7px;
+        margin: -3px 0 0 -3px;
+        background: var(--surface);
+        border: 1px solid var(--foreground);
+      }
+    </style>
+    <script>
+      if (new URLSearchParams(location.search).get("theme") === "dark") {
+        document.documentElement.classList.add("dark");
+      }
+    </script>
+  </head>
+  <body>
+    <!-- Lines across the whole card, like the site's rails and rules. -->
+    <div class="h" style="top: 56px"></div>
+    <div class="h" style="top: 344px"></div>
+    <div class="h" style="top: 584px"></div>
+    <div class="v" style="left: 56px"></div>
+    <div class="v" style="left: 1224px"></div>
+    <div class="v" style="left: 348px; top: 344px; bottom: 56px"></div>
+    <div class="v" style="left: 640px; top: 344px; bottom: 56px"></div>
+    <div class="v" style="left: 932px; top: 344px; bottom: 56px"></div>
+
+    <span class="mark" style="left: 56.5px; top: 56.5px"></span>
+    <span class="mark" style="left: 56.5px; top: 344.5px"></span>
+    <span class="mark" style="left: 56.5px; top: 584.5px"></span>
+    <span class="mark" style="left: 1224.5px; top: 56.5px"></span>
+    <span class="mark" style="left: 1224.5px; top: 344.5px"></span>
+    <span class="mark" style="left: 1224.5px; top: 584.5px"></span>
+    <span class="mark" style="left: 348.5px; top: 344.5px"></span>
+    <span class="mark" style="left: 348.5px; top: 584.5px"></span>
+    <span class="mark" style="left: 640.5px; top: 344.5px"></span>
+    <span class="mark" style="left: 640.5px; top: 584.5px"></span>
+    <span class="mark" style="left: 932.5px; top: 344.5px"></span>
+    <span class="mark" style="left: 932.5px; top: 584.5px"></span>
+
+    <section class="pitch">
+      <div class="top">
+        <div class="brand">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2.5 9V4.5a2 2 0 0 1 2-2H9" />
+            <path d="M17.5 11v4.5a2 2 0 0 1-2 2H11" />
+          </svg>
+          <span>fancyborders</span>
+        </div>
+        <span class="url">fancyborders.vercel.app</span>
+      </div>
+      <h1>Borders, but fancy.</h1>
+      <div class="foot">
+        Frames, outlines and effects for React + Tailwind
+        <span class="chip">npx shadcn add</span>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="cell">
+        <div class="bracket"><i></i><i></i><i></i><i></i><div class="dots"></div></div>
+      </div>
+      <div class="cell">
+        <div class="glow"><span class="halo"></span>Pro plan<small>glow</small></div>
+      </div>
+      <div class="cell">
+        <svg class="shape" viewBox="0 0 150 84">
+          <defs>
+            <linearGradient id="champagne" x1="0" x2="1">
+              <stop offset="0" stop-color="#ccac7b" />
+              <stop offset="1" stop-color="#c1727c" />
+            </linearGradient>
+          </defs>
+          <polygon
+            points="16,1 149,1 149,68 134,83 1,83 1,16"
+            fill="var(--surface)"
+            stroke="url(#champagne)"
+            stroke-width="1.75"
+            stroke-linejoin="round"
+          />
+          <text x="20" y="48" font-family="Geist Mono, monospace" font-size="12" fill="var(--muted)">bevel, 16px</text>
+        </svg>
+      </div>
+      <div class="cell">
+        <div class="select">
+          selection
+          <i style="left: 0; top: 0"></i>
+          <i style="left: 100%; top: 0"></i>
+          <i style="left: 0; top: 100%"></i>
+          <i style="left: 100%; top: 100%"></i>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
