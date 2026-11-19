@@ -1,6 +1,20 @@
-# fancyborders
+<h1 align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/banner-dark.png">
+    <img src=".github/assets/banner.png" alt="fancyborders: borders, but fancy. Frames, outlines and effects for React and Tailwind CSS." width="100%">
+  </picture>
+</h1>
 
-Borders, but fancy. Copy-paste frames, outlines and effects for React and Tailwind CSS.
+<p align="center">
+  <a href="https://fancyborders.vercel.app">Website</a> ·
+  <a href="#install">Install</a> ·
+  <a href="#whats-in-it">What's in it</a> ·
+  <a href="#usage">Usage</a> ·
+  <a href="#browser-support">Browser support</a> ·
+  <a href="#development">Development</a>
+</p>
+
+Copy-paste frames, outlines and effects for React and Tailwind CSS.
 
 **[fancyborders.vercel.app](https://fancyborders.vercel.app)** has every component running live, with controls to tune it, its code, and its props. Free and open source, forever.
 
