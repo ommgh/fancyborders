@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { CodeBlock } from "@/components/site/code-block";
-import { DocPage, H2, H3, InlineCode, P, PageTitle, docAlternates } from "@/components/site/doc-page";
+import { DocPage, H2, H3, InlineCode, P, PageTitle, docMetadata } from "@/components/site/doc-page";
 import { Example } from "@/components/site/example";
 import { Install } from "@/components/site/install";
 import { Playground } from "@/components/site/playground";
@@ -30,11 +30,11 @@ export async function generateMetadata({
 }: PageProps<"/docs/components/[slug]">): Promise<Metadata> {
   const doc = componentDoc((await params).slug);
   if (!doc) return {};
-  return {
+  return docMetadata({
+    href: componentHref(doc.slug),
     title: doc.title,
     description: doc.description,
-    alternates: docAlternates(componentHref(doc.slug)),
-  };
+  });
 }
 
 const anchor = (name: string) => name.toLowerCase();

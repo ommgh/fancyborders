@@ -2,16 +2,16 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { CodeBlock } from "@/components/site/code-block";
-import { DocPage, H2, InlineCode, P, PageTitle, docAlternates } from "@/components/site/doc-page";
+import { DocPage, H2, InlineCode, P, PageTitle, docMetadata } from "@/components/site/doc-page";
 import { InstallCommand } from "@/components/site/install-command";
 import { registryUrl } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = docMetadata({
+  href: "/docs/installation",
   title: "Installation",
   description:
     "Add fancyborders components to a React and Tailwind CSS project with the shadcn CLI, or copy them in by hand.",
-  alternates: docAlternates("/docs/installation"),
-};
+});
 
 const USAGE = `import { BracketFrame } from "@/components/bracket-frame";
 

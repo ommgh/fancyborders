@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
 
 import { CodeBlock } from "@/components/site/code-block";
-import { DocPage, H2, InlineCode, P, PageTitle, docAlternates } from "@/components/site/doc-page";
+import { DocPage, H2, InlineCode, P, PageTitle, docMetadata } from "@/components/site/doc-page";
 import { Tabs } from "@/components/site/tabs";
 import { GITHUB_URL, MCP_URL, REGISTRY_NAMESPACE, SITE_NAME, SITE_URL } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = docMetadata({
+  href: "/docs/ai",
   title: "AI & agents",
   description:
     "Use fancyborders from AI coding agents: a hosted MCP server, an agent skill, the shadcn registry and MCP, llms.txt and every page as Markdown.",
-  alternates: docAlternates("/docs/ai"),
-};
+});
 
 const json = (value: unknown) => JSON.stringify(value, null, 2);
 

@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
 
 import { CodeBlock } from "@/components/site/code-block";
-import { DocPage, H2, InlineCode, P, PageTitle, docAlternates } from "@/components/site/doc-page";
+import { DocPage, H2, InlineCode, P, PageTitle, docMetadata } from "@/components/site/doc-page";
 import { Example } from "@/components/site/example";
 import { PROPERTIES, SCOPE, UTILITIES, VARIANTS } from "@/content/theming";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = docMetadata({
+  href: "/docs/theming",
   title: "Theming",
   description:
     "Style fancyborders frames with Tailwind utilities: line colour, width, radius, marks, fills and effect palettes.",
-  alternates: docAlternates("/docs/theming"),
-};
+});
 
 export default function Theming() {
   return (

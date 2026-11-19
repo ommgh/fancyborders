@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
@@ -7,7 +8,7 @@ import {
 } from "@/components/site/table-of-contents";
 import { PageActions } from "@/components/site/page-actions";
 import { neighbours } from "@/content/docs";
-import { SITE_URL, markdownPath } from "@/lib/site";
+import { SITE_NAME, SITE_URL, markdownPath } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 /**
@@ -143,4 +144,33 @@ export function InlineCode({ children }: { children: ReactNode }) {
  */
 export function docAlternates(href: string) {
   return { canonical: href, types: { "text/markdown": markdownPath(href) } };
+}
+
+/**
+ * A docs page's metadata: its title and description for search and for
+ * social cards (whose image comes from the page's opengraph-image), and
+ * its addresses.
+ */
+export function docMetadata({
+  href,
+  title,
+  description,
+}: {
+  href: string;
+  title: string;
+  description: string;
+}): Metadata {
+  return {
+    title,
+    description,
+    alternates: docAlternates(href),
+    openGraph: {
+      title: `${title} · ${SITE_NAME}`,
+      description,
+      url: href,
+      siteName: SITE_NAME,
+      type: "article",
+    },
+    twitter: { card: "summary_large_image", title: `${title} · ${SITE_NAME}`, description },
+  };
 }

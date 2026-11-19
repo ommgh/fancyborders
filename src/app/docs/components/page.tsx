@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
 
 import { ComponentTile } from "@/components/site/component-tile";
-import { DocPage, PageTitle, docAlternates } from "@/components/site/doc-page";
+import { DocPage, PageTitle, docMetadata } from "@/components/site/doc-page";
 import { CATEGORIES, COMPONENTS, componentsIn } from "@/content/docs";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = docMetadata({
+  href: "/docs/components",
   title: "Components",
   description:
     "Every fancyborders component, live: structural frames, page structure, shaped outlines, line styles and effects.",
-  alternates: docAlternates("/docs/components"),
-};
+});
 
 export default function ComponentsPage() {
   return (
