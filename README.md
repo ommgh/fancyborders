@@ -10,6 +10,7 @@
   <a href="#install">Install</a> ·
   <a href="#whats-in-it">What's in it</a> ·
   <a href="#usage">Usage</a> ·
+  <a href="#ai--agents">AI & agents</a> ·
   <a href="#browser-support">Browser support</a> ·
   <a href="#development">Development</a>
 </p>
@@ -74,6 +75,17 @@ Style it with Tailwind. Colour, line width, radius and effect colours are utilit
 
 Effects work in light and dark mode. Every animation stops for people who prefer reduced motion. The [docs](https://fancyborders.vercel.app/docs) cover every component, layer, prop and utility.
 
+## AI & agents
+
+Built to be used by coding agents as well as people:
+
+- **MCP server**, hosted, no key: `https://fancyborders.vercel.app/mcp`. For example `claude mcp add --transport http fancyborders https://fancyborders.vercel.app/mcp`.
+- **Agent skill**: `npx skills add ommgh/fancyborders` (source in [`skills/fancyborders`](./skills/fancyborders)).
+- **shadcn registry and MCP**: `npx shadcn@latest registry add @fancyborders=https://fancyborders.vercel.app/r/{name}.json`, then `npx shadcn@latest add @fancyborders/glow-frame`.
+- **[llms.txt](https://fancyborders.vercel.app/llms.txt)**, **[llms-full.txt](https://fancyborders.vercel.app/llms-full.txt)**, and every docs page as Markdown with `.md` on the end.
+
+Setup for each client is on the [AI & agents](https://fancyborders.vercel.app/docs/ai) page.
+
 ## Browser support
 
 Frames and page structure use widely supported CSS. Shape frames clip with `clip-path` and use `border-shape` where it exists (Chromium 147+); curved corners need CSS `shape()`. Beams need `offset-path` (Chromium 116, Firefox 122, Safari 18), and `frame-metal` needs WebGL. Each falls back to a plain border.
@@ -96,6 +108,8 @@ bun run build            # registry, then the production build
 | `src/content/docs.ts` | Every component page and how the sidebar groups them. |
 | `src/content/playgrounds/` | Each page's live preview: controls, render and printed code. |
 | `src/content/api.ts`, `src/demos/` | Props tables, and examples shown running beside their source. |
+| `src/lib/agents/`, `src/app/mcp/` | Everything for agents: each page as Markdown, llms.txt and the MCP server, all built from the docs data. |
+| `skills/fancyborders/` | The agent skill. `SKILL.md` is written by hand; `bun run skill:build` regenerates its references after the docs data changes. |
 | `src/components/site/` | The site itself: header, ⌘K search ([cmdk](https://cmdk.paco.me)), theme switch ([next-themes](https://github.com/pacocoursey/next-themes)), sidebar ([Animate UI](https://animate-ui.com)), code blocks, playground. |
 
 Install commands use `NEXT_PUBLIC_SITE_URL`, falling back to the Vercel production URL and then `http://localhost:3000`.

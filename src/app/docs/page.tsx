@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { CodeBlock } from "@/components/site/code-block";
-import { DocPage, H2, InlineCode, P, PageTitle } from "@/components/site/doc-page";
+import { DocPage, H2, InlineCode, P, PageTitle, docAlternates } from "@/components/site/doc-page";
 import { InstallCommand } from "@/components/site/install-command";
 import { CATEGORIES, componentsIn } from "@/content/docs";
 import { registryUrl } from "@/lib/site";
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   title: "Introduction",
   description:
     "What fancyborders is, how its frames and layers fit together, and where to start.",
-  alternates: { canonical: "/docs" },
+  alternates: docAlternates("/docs"),
 };
 
 const LAYERS = `import { Frame, FrameCorners, FrameFill, FrameRules } from "@/components/ui/frame";

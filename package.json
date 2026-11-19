@@ -7,11 +7,13 @@
     "build": "bun run registry:build && next build",
     "start": "next start",
     "lint": "eslint",
-    "registry:build": "node scripts/build-registry.mjs && shadcn build"
+    "registry:build": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/build-registry.mjs && shadcn build",
+    "skill:build": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/build-skill.mjs"
   },
   "dependencies": {
     "@animate-ui/react": "^2.4.6",
     "@base-ui/react": "^1.9.0",
+    "@modelcontextprotocol/sdk": "1.32.2",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "motion": "^14.14.0",
@@ -20,7 +22,8 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "shiki": "^4.6.0",
-    "tailwind-merge": "^3.7.0"
+    "tailwind-merge": "^3.7.0",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

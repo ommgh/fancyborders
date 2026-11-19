@@ -7,6 +7,8 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import postcss from "postcss";
 
+import { COMPONENTS } from "../src/content/docs.ts";
+
 const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL;
 const site = (
   process.env.NEXT_PUBLIC_SITE_URL ??
@@ -62,6 +64,25 @@ const css = (file) => convert(postcss.parse(readFileSync(file, "utf8")));
 // reads to show each item's source for a manual install.
 const items = JSON.parse(readFileSync("registry/items.json", "utf8"));
 
+/*
+ * A note for each item, which the shadcn CLI prints after installing it and
+ * its MCP server shows to agents: the pages that use the item, as Markdown.
+ */
+function docsFor(name) {
+  const pages = COMPONENTS.filter((doc) => doc.item === name);
+  const own = pages.find((doc) => !doc.recipe) ?? pages[0];
+  const lines = pages.map(
+    (doc) => `- ${doc.title}${doc.recipe ? " (recipe)" : ""}: ${site}/docs/components/${doc.slug}.md`,
+  );
+  return [
+    own ? `${own.title}: ${own.description}` : null,
+    lines.length ? `Docs, usage and props:\n${lines.join("\n")}` : null,
+    `Everything for AI agents: ${site}/llms.txt (MCP server: ${site}/mcp)`,
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
 const registry = {
   $schema: "https://ui.shadcn.com/schema/registry.json",
   name: "fancyborders",
@@ -71,6 +92,7 @@ const registry = {
     ...(requires && { registryDependencies: requires.map(item) }),
     files: files.map((path) => ({ path, type: rest.type })),
     ...(stylesheet && { css: css(stylesheet) }),
+    docs: docsFor(rest.name),
   })),
 };
 

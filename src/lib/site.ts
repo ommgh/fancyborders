@@ -23,3 +23,14 @@ export function registryUrl(item: string) {
 export function installCommand(item: string) {
   return `npx shadcn@latest add ${registryUrl(item)}`;
 }
+
+/** The namespace the registry goes by in a project's components.json. */
+export const REGISTRY_NAMESPACE = "@fancyborders";
+
+/** The hosted MCP server. */
+export const MCP_URL = `${SITE_URL}/mcp`;
+
+/** Where a docs page's Markdown lives: its address with `.md` on the end. */
+export function markdownPath(href: string) {
+  return `${href.replace(/\/$/, "")}.md`;
+}

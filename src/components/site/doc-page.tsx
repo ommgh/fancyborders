@@ -5,7 +5,9 @@ import {
   TableOfContents,
   type Heading,
 } from "@/components/site/table-of-contents";
+import { PageActions } from "@/components/site/page-actions";
 import { neighbours } from "@/content/docs";
+import { SITE_URL, markdownPath } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 /**
@@ -98,6 +100,7 @@ export function PageTitle({
         {title}
       </h1>
       <p className="mt-3 text-lg text-muted text-pretty">{lead}</p>
+      <PageActions siteUrl={SITE_URL} />
       {children}
     </header>
   );
@@ -132,4 +135,12 @@ export function InlineCode({ children }: { children: ReactNode }) {
       {children}
     </code>
   );
+}
+
+/**
+ * A docs page's canonical address, and its Markdown version as an
+ * alternate, so agents reading the HTML can find the plain text.
+ */
+export function docAlternates(href: string) {
+  return { canonical: href, types: { "text/markdown": markdownPath(href) } };
 }

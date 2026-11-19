@@ -498,6 +498,7 @@ export const GUIDES: NavLink[] = [
   { title: "Introduction", href: "/docs" },
   { title: "Installation", href: "/docs/installation" },
   { title: "Theming", href: "/docs/theming" },
+  { title: "AI & agents", href: "/docs/ai" },
   { title: "All components", href: "/docs/components" },
 ];
 

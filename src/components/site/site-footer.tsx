@@ -21,6 +21,12 @@ export function SiteFooter() {
           <Link href="/docs/components" className="transition-colors hover:text-foreground">
             Components
           </Link>
+          <Link href="/docs/ai" className="transition-colors hover:text-foreground">
+            For agents
+          </Link>
+          <a href="/llms.txt" className="transition-colors hover:text-foreground">
+            llms.txt
+          </a>
           <a href={GITHUB_URL} target="_blank" rel="noreferrer" className="transition-colors hover:text-foreground">
             GitHub
           </a>

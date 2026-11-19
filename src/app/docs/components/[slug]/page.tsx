@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { CodeBlock } from "@/components/site/code-block";
-import { DocPage, H2, H3, InlineCode, P, PageTitle } from "@/components/site/doc-page";
+import { DocPage, H2, H3, InlineCode, P, PageTitle, docAlternates } from "@/components/site/doc-page";
 import { Example } from "@/components/site/example";
 import { Install } from "@/components/site/install";
 import { Playground } from "@/components/site/playground";
@@ -33,7 +33,7 @@ export async function generateMetadata({
   return {
     title: doc.title,
     description: doc.description,
-    alternates: { canonical: componentHref(doc.slug) },
+    alternates: docAlternates(componentHref(doc.slug)),
   };
 }
 
