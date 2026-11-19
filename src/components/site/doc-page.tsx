@@ -25,14 +25,14 @@ export function DocPage({
   const { previous, next } = neighbours(href);
 
   return (
-    <div className="xl:grid xl:grid-cols-[minmax(0,1fr)_13rem] xl:gap-12">
+    <div className="xl:-mr-8 xl:grid xl:grid-cols-[minmax(0,1fr)_14rem] xl:gap-10">
       <article className="min-w-0 pt-10 pb-20">
         <div className="mx-auto max-w-3xl">
           {children}
 
           <nav
             aria-label="Pages"
-            className="mt-20 grid gap-4 border-t border-foreground/10 pt-6 sm:grid-cols-2"
+            className="mt-20 grid gap-4 border-t border-line pt-6 sm:grid-cols-2"
           >
             {previous ? (
               <PagerLink page={previous} label="Previous" />
@@ -44,8 +44,8 @@ export function DocPage({
         </div>
       </article>
 
-      <aside className="hidden xl:block">
-        <div className="sticky top-14 max-h-[calc(100vh-3.5rem)] overflow-y-auto py-10">
+      <aside className="hidden border-l border-line xl:block">
+        <div className="sticky top-14 max-h-[calc(100svh-3.5rem)] overflow-y-auto px-6 py-10">
           <TableOfContents headings={headings} />
         </div>
       </aside>
@@ -66,11 +66,11 @@ function PagerLink({
     <Link
       href={page.href}
       className={cn(
-        "group border border-foreground/10 px-4 py-3 transition-colors hover:border-foreground/30",
+        "group rounded-lg border border-line bg-surface px-4 py-3 transition-colors hover:border-foreground/25",
         align === "right" && "sm:text-right",
       )}
     >
-      <span className="block font-mono text-xs text-foreground/50">{label}</span>
+      <span className="block font-mono text-xs text-muted">{label}</span>
       <span className="mt-1 block font-medium">{page.title}</span>
     </Link>
   );
@@ -92,12 +92,12 @@ export function PageTitle({
   return (
     <header className="mb-10">
       {eyebrow && (
-        <p className="mb-3 font-mono text-xs text-foreground/50">{eyebrow}</p>
+        <p className="mb-3 font-mono text-xs text-muted">{eyebrow}</p>
       )}
-      <h1 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
+      <h1 className="text-3xl font-semibold tracking-[-0.025em] text-balance sm:text-4xl">
         {title}
       </h1>
-      <p className="mt-3 text-lg text-foreground/60 text-pretty">{lead}</p>
+      <p className="mt-3 text-lg text-muted text-pretty">{lead}</p>
       {children}
     </header>
   );
@@ -107,7 +107,7 @@ export function H2({ id, children }: { id: string; children: ReactNode }) {
   return (
     <h2
       id={id}
-      className="mt-14 mb-4 scroll-mt-20 text-xl font-semibold tracking-tight"
+      className="mt-14 mb-4 scroll-mt-20 text-xl font-semibold tracking-[-0.02em]"
     >
       <a href={`#${id}`}>{children}</a>
     </h2>
@@ -128,7 +128,7 @@ export function P({ children }: { children: ReactNode }) {
 
 export function InlineCode({ children }: { children: ReactNode }) {
   return (
-    <code className="bg-foreground/[0.07] px-1 py-0.5 font-mono text-[0.85em]">
+    <code className="rounded bg-foreground/[0.07] px-1 py-0.5 font-mono text-[0.85em]">
       {children}
     </code>
   );

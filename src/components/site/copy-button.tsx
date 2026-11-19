@@ -32,7 +32,7 @@ export function CopyButton({
       onClick={copy}
       aria-live="polite"
       className={cn(
-        "shrink-0 cursor-pointer px-2 py-1 font-mono text-xs text-foreground/50 transition-colors hover:text-foreground",
+        "shrink-0 cursor-pointer px-2 py-1 font-mono text-xs text-muted transition-colors hover:text-foreground",
         className,
       )}
     >

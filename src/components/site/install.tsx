@@ -18,7 +18,7 @@ export function Install({ item }: { item: string }) {
     <Tabs labels={["CLI", "Manual"]}>
       <div>
         <InstallCommand url={registryUrl(item)} />
-        <p className="mt-3 text-sm text-foreground/60">
+        <p className="mt-3 text-sm text-muted">
           The CLI copies the component into your project, adds anything it is
           built on, and writes its CSS into your global stylesheet. New to the
           CLI? See{" "}
@@ -76,7 +76,7 @@ function Step({
   return (
     <li className="min-w-0">
       <p className="mb-3 flex items-baseline gap-3 text-sm font-medium">
-        <span className="font-mono text-xs text-foreground/50">0{number}</span>
+        <span className="font-mono text-xs text-muted">0{number}</span>
         {title}
       </p>
       {children}

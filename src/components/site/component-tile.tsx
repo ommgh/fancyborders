@@ -25,10 +25,10 @@ export function ComponentTile({
       href={componentHref(doc.slug)}
       tabIndex={inert ? -1 : undefined}
       aria-hidden={inert || undefined}
-      className="group flex flex-col border border-foreground/10 transition-colors hover:border-foreground/30"
+      className="group flex flex-col overflow-hidden rounded-xl border border-line bg-surface transition-colors hover:border-foreground/25"
     >
       {compact && (
-        <div className="border-b border-foreground/10 px-3 py-1.5 font-mono text-xs text-foreground/50 transition-colors group-hover:text-foreground">
+        <div className="border-b border-line px-3 py-1.5 font-mono text-xs text-muted transition-colors group-hover:text-foreground">
           {doc.slug}
         </div>
       )}
@@ -42,14 +42,14 @@ export function ComponentTile({
         <PlaygroundPreview slug={doc.slug} />
       </div>
       {!compact && (
-        <div className="border-t border-foreground/10 px-4 py-3">
+        <div className="border-t border-line px-4 py-3">
           <div className="flex items-baseline justify-between gap-3">
             <div className="font-medium">{doc.title}</div>
             {doc.recipe && (
-              <div className="font-mono text-xs text-foreground/50">recipe</div>
+              <div className="font-mono text-xs text-muted">recipe</div>
             )}
           </div>
-          <div className="mt-1 line-clamp-2 text-sm text-foreground/60">
+          <div className="mt-1 line-clamp-2 text-sm text-muted">
             {doc.description}
           </div>
         </div>

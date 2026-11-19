@@ -20,8 +20,8 @@ export function PreviewTabs({
   const [tab, setTab] = useState<(typeof TABS)[number]>("Preview");
 
   return (
-    <div className="border border-foreground/10">
-      <div className="flex min-h-9 items-center justify-between border-b border-foreground/10 px-1.5 py-1">
+    <div className="overflow-hidden rounded-xl border border-line bg-surface">
+      <div className="flex min-h-9 items-center justify-between border-b border-line px-1.5 py-1">
         <TabList tabs={TABS} value={tab} onChange={setTab} />
         {tab === "Code" && copy}
       </div>

@@ -4,6 +4,6 @@
  */
 export function stageClass(stage?: "dark") {
   return stage === "dark"
-    ? "bg-neutral-950 text-neutral-100 [--background:var(--color-neutral-950)] [--foreground:var(--color-neutral-100)]"
-    : "bg-foreground/[0.03]";
+    ? "bg-(--stage-dark) text-[oklch(0.92_0_0)] [--background:var(--stage-dark)] [--foreground:oklch(0.92_0_0)]"
+    : "bg-background";
 }

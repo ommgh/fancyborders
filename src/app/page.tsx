@@ -1,11 +1,11 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 
-import { HatchDivider } from "@/components/hatch-divider";
-import { PageRails } from "@/components/page-rails";
 import { CodeBlock } from "@/components/site/code-block";
 import { InstallCommand } from "@/components/site/install-command";
 import { PlaygroundPreview } from "@/components/site/playground";
 import { PreviewWall } from "@/components/site/preview-wall";
+import { SiteRule } from "@/components/site/site-rule";
 import { stageClass } from "@/components/site/stage";
 import {
   CATEGORIES,
@@ -14,199 +14,184 @@ import {
   componentsIn,
   type Category,
 } from "@/content/docs";
-import { GITHUB_URL, registryUrl, SITE_NAME } from "@/lib/site";
+import { registryUrl } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
-/** The component that stands for each category on the landing page. */
-const FEATURED: Record<Category, string> = {
-  frames: "bracket-frame",
-  structure: "section-grid",
-  shapes: "shape-frame",
-  lines: "marching-ants",
-  effects: "glow",
+/** The component that stands for each category, and how wide its cell is. */
+const FEATURED: Record<Category, { slug: string; wide?: boolean }> = {
+  frames: { slug: "bracket-frame", wide: true },
+  structure: { slug: "section-grid" },
+  shapes: { slug: "shape-frame" },
+  lines: { slug: "marching-ants" },
+  effects: { slug: "glow" },
 };
 
-const STEPS = [
-  {
-    title: "Add a component",
-    text: "One command copies it into your project, with everything it is built on.",
-    code: `npx shadcn@latest add ${registryUrl("glow-frame")}`,
-    lang: "bash",
-  },
-  {
-    title: "Wrap your content",
-    text: "Use a preset as it is, or compose your own frame from layers.",
-    code: `<Frame className="p-6">
+const WRAP = `<Frame className="p-6">
   <FrameRules overshoot={10} />
   <FrameCorners mark="plus" />
   Content
-</Frame>`,
-    lang: "tsx",
-  },
-  {
-    title: "Style it with Tailwind",
-    text: "Colour, line width and radius are utilities, variants included.",
-    code: `<Frame className="frame-line-2
+</Frame>`;
+
+const STYLE = `<Frame className="frame-line-2
   frame-color-sky-500/50
-  hover:frame-color-sky-500">`,
-    lang: "tsx",
-  },
-] as const;
+  hover:frame-color-sky-500">`;
 
 export default function Home() {
   return (
-    <main className="flex-1 overflow-x-clip">
-      {/* ── Hero: the pitch on the left, every component live on the right. */}
-      <section className="mx-auto grid max-w-[90rem] grid-cols-[minmax(0,1fr)] px-4 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:gap-14">
-        <div className="flex min-w-0 flex-col justify-center py-16 lg:min-h-[calc(100vh-3.5rem)] lg:py-10">
-          <p className="font-mono text-xs text-foreground/50">
-            Open source · React · Tailwind CSS · shadcn registry
-          </p>
-          <h1 className="mt-5 max-w-xl text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
-            Borders, frames and enclosures for React and Tailwind.
+    <main className="flex-1">
+      {/* ── Hero: a line of pitch and two ways in; the components run beside it. */}
+      <section className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+        <div className="flex flex-col justify-center px-6 py-16 sm:px-10 lg:py-20">
+          <Link
+            href="/docs/components"
+            className="group flex w-fit items-center gap-2 rounded-full border border-line bg-surface py-1 pr-3 pl-1 text-xs text-muted transition-colors hover:text-foreground"
+          >
+            <span className="rounded-full bg-foreground px-2 py-0.5 font-medium text-background">
+              {COMPONENTS.length}
+            </span>
+            components, free forever
+            <span className="transition-transform group-hover:translate-x-0.5">→</span>
+          </Link>
+          <h1 className="mt-6 text-5xl font-semibold tracking-[-0.04em] text-balance sm:text-6xl">
+            Borders, but fancy.
           </h1>
-          <p className="mt-5 max-w-lg text-lg text-foreground/60 text-pretty">
-            {COMPONENTS.length} copy-paste components for the edges of your
-            interface: structural frames, page rails and grids, shaped
-            outlines, line styles, and borders that glow, travel and turn to
-            metal.
+          <p className="mt-5 max-w-md text-lg text-muted text-pretty">
+            Copy-paste frames, outlines and effects for React and Tailwind.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
               href="/docs/components"
-              className="bg-foreground px-4 py-2 text-sm font-medium text-background transition-opacity hover:opacity-85"
+              className="flex h-10 items-center rounded-lg bg-foreground px-4 text-sm font-medium text-background transition-opacity hover:opacity-85"
             >
-              Browse components →
+              Browse components
             </Link>
-            <a
-              href={GITHUB_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="border border-foreground/20 px-4 py-2 text-sm font-medium transition-colors hover:border-foreground/50"
+            <Link
+              href="/docs"
+              className="flex h-10 items-center rounded-lg border border-line bg-surface px-4 text-sm font-medium transition-colors hover:border-foreground/25"
             >
-              Star on GitHub
-            </a>
-          </div>
-          <div className="mt-10 max-w-xl">
-            <InstallCommand url={registryUrl("frame")} />
+              Get started
+            </Link>
           </div>
         </div>
 
-        <PreviewWall className="h-[26rem] lg:h-[calc(100vh-3.5rem)]" />
+        <PreviewWall className="h-[26rem] border-t border-line px-4 sm:px-6 lg:h-[36rem] lg:border-t-0 lg:border-l" />
       </section>
 
-      {/* ── Below the hero: a column between two rails, as the site began. */}
-      <div className="px-4 sm:px-8">
-        <PageRails className="mx-auto w-full max-w-5xl">
-          <HatchDivider bleed />
-
-          <section className="px-6 py-16 sm:px-10">
-            <h2 className="text-2xl font-semibold tracking-tight">
-              Five kinds of border
-            </h2>
-            <p className="mt-2 max-w-prose text-foreground/60">
-              Everything is a frame with layers inside it, so the pieces
-              combine: a beam around a bevelled shape, a glow behind a ticket.
-            </p>
-            <div className="mt-10 grid gap-6 sm:grid-cols-2">
-              {CATEGORIES.map((category, index) => {
-                const featured = componentDoc(FEATURED[category.id])!;
-                return (
-                  <Link
-                    key={category.id}
-                    href={`/docs/components#${category.id}`}
-                    className={cn(
-                      "group flex flex-col border border-foreground/10 transition-colors hover:border-foreground/30",
-                      // An odd one out at the end takes the whole row.
-                      index === CATEGORIES.length - 1 &&
-                        index % 2 === 0 &&
-                        "sm:col-span-2",
-                    )}
-                  >
-                    <div
-                      className={cn(
-                        "pointer-events-none grid min-h-52 flex-1 place-items-center overflow-hidden p-8",
-                        stageClass(featured.stage),
-                      )}
-                    >
-                      <PlaygroundPreview slug={featured.slug} />
-                    </div>
-                    <div className="border-t border-foreground/10 p-5">
-                      <div className="flex items-baseline justify-between">
-                        <h3 className="font-medium">{category.title}</h3>
-                        <span className="font-mono text-xs text-foreground/50">
-                          {componentsIn(category.id).length} components →
-                        </span>
-                      </div>
-                      <p className="mt-1 text-sm text-foreground/60">
-                        {category.lead}
-                      </p>
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
-          </section>
-
-          <HatchDivider bleed />
-
-          <section className="px-6 py-16 sm:px-10">
-            <h2 className="text-2xl font-semibold tracking-tight">
-              Yours in three steps
-            </h2>
-            <p className="mt-2 max-w-prose text-foreground/60">
-              No package to install. The code lands in your project, and it is
-              yours to change.
-            </p>
-            <ol className="mt-10 grid gap-8 lg:grid-cols-3">
-              {STEPS.map((step, index) => (
-                <li key={step.title} className="flex min-w-0 flex-col">
-                  <p className="font-mono text-xs text-foreground/50">
-                    0{index + 1}
-                  </p>
-                  <h3 className="mt-2 font-medium">{step.title}</h3>
-                  <p className="mt-1 mb-4 text-sm text-foreground/60">
-                    {step.text}
-                  </p>
-                  <CodeBlock
-                    code={step.code}
-                    lang={step.lang}
-                    className="flex-1"
-                  />
-                </li>
-              ))}
-            </ol>
+      {/* ── The five kinds, one live preview each. */}
+      <SiteRule />
+      <SectionHeading
+        title="Five kinds of border"
+        lead="They're all frames with layers, so they stack."
+        link={["All components", "/docs/components"]}
+      />
+      <SiteRule />
+      <div className="grid gap-px bg-line sm:grid-cols-2 lg:grid-cols-3">
+        {CATEGORIES.map((category) => {
+          const { slug, wide } = FEATURED[category.id];
+          const featured = componentDoc(slug)!;
+          return (
             <Link
-              href="/docs/installation"
-              className="mt-8 inline-block text-sm underline underline-offset-4"
+              key={category.id}
+              href={`/docs/components#${category.id}`}
+              className={cn(
+                "group flex flex-col bg-background p-3 transition-colors hover:bg-surface",
+                wide && "sm:col-span-2",
+              )}
             >
-              Read the installation guide
-            </Link>
-          </section>
-
-          <HatchDivider bleed />
-
-          <footer className="flex flex-wrap items-baseline justify-between gap-4 px-6 py-8 font-mono text-xs text-foreground/50 sm:px-10">
-            <p>{SITE_NAME} · free and open source</p>
-            <p className="flex gap-5">
-              <Link href="/docs" className="hover:text-foreground">
-                Docs
-              </Link>
-              <Link href="/docs/components" className="hover:text-foreground">
-                Components
-              </Link>
-              <a
-                href={GITHUB_URL}
-                target="_blank"
-                rel="noreferrer"
-                className="hover:text-foreground"
+              <div
+                className={cn(
+                  "pointer-events-none grid min-h-60 flex-1 place-items-center overflow-hidden rounded-lg p-8",
+                  stageClass(featured.stage),
+                  !featured.stage && "border border-line bg-surface",
+                )}
               >
-                GitHub
-              </a>
-            </p>
-          </footer>
-        </PageRails>
+                <PlaygroundPreview slug={featured.slug} />
+              </div>
+              <div className="px-2 pt-4 pb-2">
+                <div className="flex items-baseline justify-between gap-3">
+                  <h3 className="font-medium">{category.title}</h3>
+                  <span className="font-mono text-xs text-muted transition-colors group-hover:text-foreground">
+                    {componentsIn(category.id).length} →
+                  </span>
+                </div>
+                <p className="mt-1 text-sm text-muted">{category.lead}</p>
+              </div>
+            </Link>
+          );
+        })}
       </div>
+
+      {/* ── Install, as a bento: the command gets a whole row to itself. */}
+      <SiteRule />
+      <SectionHeading
+        title="Yours in three steps"
+        lead="No package. The code lands in your project."
+        link={["Installation guide", "/docs/installation"]}
+      />
+      <SiteRule />
+      <ol className="grid gap-px bg-line lg:grid-cols-2">
+        <Step
+          number={1}
+          title="Add it"
+          text="One command, any package manager."
+          className="lg:col-span-2 lg:grid lg:grid-cols-[16rem_minmax(0,1fr)] lg:items-center lg:gap-10"
+        >
+          <InstallCommand url={registryUrl("glow-frame")} />
+        </Step>
+        <Step number={2} title="Wrap it" text="Use a preset, or stack your own layers.">
+          <CodeBlock code={WRAP} lang="tsx" className="h-full" />
+        </Step>
+        <Step number={3} title="Style it" text="Colour, width and radius are Tailwind utilities.">
+          <CodeBlock code={STYLE} lang="tsx" className="h-full" />
+        </Step>
+      </ol>
     </main>
+  );
+}
+
+function SectionHeading({
+  title,
+  lead,
+  link: [label, href],
+}: {
+  title: string;
+  lead: string;
+  link: [string, string];
+}) {
+  return (
+    <div className="flex flex-wrap items-end justify-between gap-4 px-6 py-10 sm:px-10">
+      <div>
+        <h2 className="text-2xl font-semibold tracking-[-0.025em]">{title}</h2>
+        <p className="mt-1.5 text-muted">{lead}</p>
+      </div>
+      <Link href={href} className="text-sm text-muted transition-colors hover:text-foreground">
+        {label} →
+      </Link>
+    </div>
+  );
+}
+
+function Step({
+  number,
+  title,
+  text,
+  className,
+  children,
+}: {
+  number: number;
+  title: string;
+  text: string;
+  className?: string;
+  children: ReactNode;
+}) {
+  return (
+    <li className={cn("flex min-w-0 flex-col gap-5 bg-background px-6 py-8 sm:px-10", className)}>
+      <div>
+        <p className="font-mono text-xs text-muted">0{number}</p>
+        <h3 className="mt-2 text-lg font-medium">{title}</h3>
+        <p className="mt-1 text-sm text-muted">{text}</p>
+      </div>
+      <div className="min-w-0 flex-1">{children}</div>
+    </li>
   );
 }

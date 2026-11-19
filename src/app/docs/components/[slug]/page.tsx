@@ -123,7 +123,7 @@ export default async function ComponentPage({
             {doc.notes.map((note) => (
               <li
                 key={note}
-                className="border-l-2 border-foreground/15 pl-4 leading-7 text-foreground/80"
+                className="border-l-2 border-line pl-4 leading-7 text-foreground/80"
               >
                 {note}
               </li>
@@ -143,7 +143,7 @@ export default async function ComponentPage({
               <PropsTable table={table} />
             </div>
             {table.extends && (
-              <p className="mt-3 text-sm text-foreground/60">{table.extends}</p>
+              <p className="mt-3 text-sm text-muted">{table.extends}</p>
             )}
           </section>
         );

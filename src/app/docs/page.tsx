@@ -87,15 +87,15 @@ export default function Introduction() {
           <Link
             key={category.id}
             href={`/docs/components#${category.id}`}
-            className="border border-foreground/10 p-4 transition-colors hover:border-foreground/30"
+            className="border border-line p-4 transition-colors hover:border-foreground/30"
           >
             <span className="flex items-baseline justify-between">
               <span className="font-medium">{category.title}</span>
-              <span className="font-mono text-xs text-foreground/50">
+              <span className="font-mono text-xs text-muted">
                 {componentsIn(category.id).length}
               </span>
             </span>
-            <span className="mt-1 block text-sm text-foreground/60">
+            <span className="mt-1 block text-sm text-muted">
               {category.lead}
             </span>
           </Link>
@@ -124,7 +124,7 @@ export default function Introduction() {
         ].map(([title, text]) => (
           <li
             key={title}
-            className="border-l-2 border-foreground/15 pl-4 leading-7 text-foreground/80"
+            className="border-l-2 border-line pl-4 leading-7 text-foreground/80"
           >
             <span className="font-medium text-foreground">{title}</span> {text}
           </li>

@@ -1,14 +1,25 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Geist_Mono, Instrument_Sans, Instrument_Serif } from "next/font/google";
 
+import { PageRails } from "@/components/page-rails";
+import { SiteFooter } from "@/components/site/site-footer";
 import { SiteHeader } from "@/components/site/site-header";
+import { ThemeProvider } from "@/components/site/theme";
 import { SITE_NAME, SITE_TAGLINE, SITE_URL } from "@/lib/site";
 
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const instrumentSans = Instrument_Sans({
+  variable: "--font-instrument-sans",
   subsets: ["latin"],
+});
+
+// Only the wordmark uses it, for its curved, slanted f.
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-instrument-serif",
+  subsets: ["latin"],
+  weight: "400",
+  style: "italic",
 });
 
 const geistMono = Geist_Mono({
@@ -17,7 +28,7 @@ const geistMono = Geist_Mono({
 });
 
 const description =
-  "Copy-paste borders, frames and effects for React and Tailwind CSS: structural frames, shaped outlines, line styles, glow, beams and liquid metal. Free, open source, installed with the shadcn CLI.";
+  "Copy-paste borders, frames and effects for React and Tailwind CSS. Free, open source, installed with the shadcn CLI.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -33,19 +44,40 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f7f7f7" },
+    { media: "(prefers-color-scheme: dark)", color: "#141414" },
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
+    // The theme script sets a class on <html> before React hydrates.
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
+      className={`${instrumentSans.variable} ${instrumentSerif.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col">
-        <SiteHeader />
-        {children}
+      <body className="min-h-full">
+        <ThemeProvider>
+          {/* Section rules run a whole window wider each way; clipped here
+              rather than on <body>, whose overflow would pass to the
+              viewport. */}
+          <div className="overflow-x-clip">
+            {/* One column, ruled down both sides, from the header to the
+                footer. Every section sits flush between the rails. */}
+            <PageRails className="site-lines mx-auto flex min-h-svh w-full max-w-[84rem] flex-col">
+              <SiteHeader />
+              <div className="flex flex-1 flex-col">{children}</div>
+              <SiteFooter />
+            </PageRails>
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   );

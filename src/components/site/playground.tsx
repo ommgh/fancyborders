@@ -35,8 +35,8 @@ export function Playground({ slug, stage }: { slug: string; stage?: "dark" }) {
   );
 
   return (
-    <div className="border border-foreground/10">
-      <div className="flex items-center justify-between border-b border-foreground/10 px-1.5 py-1">
+    <div className="overflow-hidden rounded-xl border border-line bg-surface">
+      <div className="flex items-center justify-between border-b border-line px-1.5 py-1">
         <TabList tabs={TABS} value={tab} onChange={setTab} />
         <div className="flex items-center">
           {tab === "Code" ? (
@@ -45,7 +45,7 @@ export function Playground({ slug, stage }: { slug: string; stage?: "dark" }) {
             <button
               type="button"
               onClick={() => setRun((count) => count + 1)}
-              className="cursor-pointer px-2 py-1 font-mono text-xs text-foreground/50 transition-colors hover:text-foreground"
+              className="cursor-pointer px-2 py-1 font-mono text-xs text-muted transition-colors hover:text-foreground"
             >
               Replay
             </button>
@@ -67,14 +67,14 @@ export function Playground({ slug, stage }: { slug: string; stage?: "dark" }) {
         <LiveCode code={code} className="min-h-80 bg-foreground/[0.03]" />
       )}
 
-      <div className="border-t border-foreground/10">
+      <div className="border-t border-line">
         <div className="flex items-center justify-between px-4 pt-3">
-          <p className="font-mono text-xs text-foreground/50">Customize</p>
+          <p className="font-mono text-xs text-muted">Customize</p>
           <button
             type="button"
             disabled={!changed}
             onClick={() => setValues(playground.defaults)}
-            className="cursor-pointer font-mono text-xs text-foreground/50 transition-colors hover:text-foreground disabled:cursor-default disabled:opacity-0"
+            className="cursor-pointer font-mono text-xs text-muted transition-colors hover:text-foreground disabled:cursor-default disabled:opacity-0"
           >
             Reset
           </button>
@@ -153,7 +153,7 @@ function ControlRow({
             onChange={(event) => onChange(Number(event.target.value))}
             className="h-1 min-w-0 flex-1 cursor-pointer accent-foreground"
           />
-          <span className="w-14 shrink-0 text-right font-mono text-xs text-foreground/60 tabular-nums">
+          <span className="w-14 shrink-0 text-right font-mono text-xs text-muted tabular-nums">
             {String(value)}
             {control.unit}
           </span>
@@ -167,7 +167,7 @@ function ControlRow({
           <select
             value={String(value)}
             onChange={(event) => onChange(event.target.value)}
-            className="min-w-0 flex-1 cursor-pointer border border-foreground/15 bg-background px-2 py-1 font-mono text-xs"
+            className="min-w-0 flex-1 cursor-pointer border border-line bg-background px-2 py-1 font-mono text-xs"
           >
             {control.options.map((option) => (
               <option key={option} value={option}>
@@ -200,14 +200,14 @@ function ControlRow({
         <label className={row}>
           {name}
           <span className="flex-1" />
-          <span className="font-mono text-xs text-foreground/60">
+          <span className="font-mono text-xs text-muted">
             {String(value)}
           </span>
           <input
             type="color"
             value={String(value)}
             onChange={(event) => onChange(event.target.value)}
-            className="size-6 shrink-0 cursor-pointer border border-foreground/15 bg-transparent p-0"
+            className="size-6 shrink-0 cursor-pointer border border-line bg-transparent p-0"
           />
         </label>
       );

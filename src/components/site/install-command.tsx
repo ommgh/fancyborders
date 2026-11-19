@@ -55,13 +55,13 @@ export function InstallCommand({ url }: { url: string }) {
   const command = `${MANAGERS[manager]} ${url}`;
 
   return (
-    <div className="border border-foreground/10 bg-foreground/[0.03]">
-      <div className="flex items-center justify-between border-b border-foreground/10 px-1.5 py-1">
+    <div className="overflow-hidden rounded-xl border border-line bg-surface">
+      <div className="flex items-center justify-between border-b border-line px-1.5 py-1">
         <TabList tabs={NAMES} value={manager} onChange={choose} />
         <CopyButton text={command} />
       </div>
       <pre className="overflow-x-auto p-4 font-mono text-[0.8125rem] leading-relaxed">
-        <span className="text-foreground/50">{MANAGERS[manager]} </span>
+        <span className="text-muted">{MANAGERS[manager]} </span>
         {url}
       </pre>
     </div>

@@ -28,7 +28,7 @@ export default function ComponentsPage() {
             <h2 className="text-xl font-semibold tracking-tight">
               {category.title}
             </h2>
-            <p className="mt-1 mb-6 text-foreground/60">{category.lead}</p>
+            <p className="mt-1 mb-6 text-muted">{category.lead}</p>
             <div className="grid gap-5 sm:grid-cols-2">
               {componentsIn(category.id).map((doc) => (
                 <ComponentTile key={doc.slug} doc={doc} />

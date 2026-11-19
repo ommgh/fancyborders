@@ -119,17 +119,17 @@ function Table({
   rows: [string, string][];
 }) {
   return (
-    <div className="overflow-x-auto border border-foreground/10">
+    <div className="overflow-x-auto border border-line">
       <table className="w-full border-collapse text-left text-sm">
         <thead>
-          <tr className="border-b border-foreground/10 font-mono text-xs text-foreground/50">
+          <tr className="border-b border-line font-mono text-xs text-muted">
             <th className="px-4 py-2 font-normal">{head[0]}</th>
             <th className="px-4 py-2 font-normal">{head[1]}</th>
           </tr>
         </thead>
         <tbody>
           {rows.map(([name, sets]) => (
-            <tr key={name} className="border-b border-foreground/10 last:border-0">
+            <tr key={name} className="border-b border-line last:border-0">
               <td className="px-4 py-2.5 font-mono text-[0.8125rem] whitespace-nowrap">
                 {name}
               </td>

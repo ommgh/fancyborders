@@ -37,8 +37,8 @@ export function TableOfContents({ headings }: { headings: Heading[] }) {
 
   return (
     <nav aria-label="On this page">
-      <p className="mb-3 font-mono text-xs text-foreground/50">On this page</p>
-      <ul className="grid border-l border-foreground/10">
+      <p className="mb-3 font-mono text-xs text-muted">On this page</p>
+      <ul className="grid border-l border-line">
         {headings.map((heading) => (
           <li key={heading.id}>
             <a
@@ -48,7 +48,7 @@ export function TableOfContents({ headings }: { headings: Heading[] }) {
                 heading.depth === 3 ? "pl-7" : "pl-4",
                 heading.id === active
                   ? "border-foreground text-foreground"
-                  : "border-transparent text-foreground/60 hover:text-foreground",
+                  : "border-transparent text-muted hover:text-foreground",
               )}
             >
               {heading.title}

@@ -6,47 +6,68 @@
 @import "../components/ui/frame-spotlight.css";
 @import "../components/ui/frame-metal.css";
 
+/* The theme switcher puts `.dark` on <html>, so `dark:` follows it rather
+   than the system setting. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Toned-down neutrals: never pure white or pure black. Lines are a solid
+ * grey rather than a translucent foreground, so they read the same over any
+ * surface.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: oklch(0.975 0 0);
+  --foreground: oklch(0.27 0 0);
+  --muted: oklch(0.52 0 0);
+  --surface: oklch(0.99 0 0);
+  --line: oklch(0.905 0 0);
+  --stage-dark: oklch(0.2 0 0);
 
   /* Syntax colours, shared by server-highlighted code and the playground. */
-  --code-foreground: #24292f;
+  --code-foreground: oklch(0.3 0 0);
   --code-background: transparent;
-  --code-token-keyword: #cf222e;
-  --code-token-string: #0a3069;
-  --code-token-string-expression: #0a3069;
-  --code-token-comment: #6e7781;
-  --code-token-constant: #0550ae;
-  --code-token-function: #8250df;
-  --code-token-parameter: #24292f;
-  --code-token-punctuation: #57606a;
-  --code-token-link: #0550ae;
+  --code-token-keyword: #c43d4b;
+  --code-token-string: #23558f;
+  --code-token-string-expression: #23558f;
+  --code-token-comment: #8a8f96;
+  --code-token-constant: #2a62a8;
+  --code-token-function: #7a52c7;
+  --code-token-parameter: oklch(0.3 0 0);
+  --code-token-punctuation: #6b7078;
+  --code-token-link: #2a62a8;
+}
+
+.dark {
+  --background: oklch(0.178 0 0);
+  --foreground: oklch(0.92 0 0);
+  --muted: oklch(0.66 0 0);
+  --surface: oklch(0.205 0 0);
+  --line: oklch(0.275 0 0);
+  --stage-dark: oklch(0.15 0 0);
+
+  --code-foreground: oklch(0.9 0 0);
+  --code-token-keyword: #f08a83;
+  --code-token-string: #a8cdf5;
+  --code-token-string-expression: #a8cdf5;
+  --code-token-comment: #7d838b;
+  --code-token-constant: #8ec2f5;
+  --code-token-function: #cdb0f2;
+  --code-token-parameter: oklch(0.9 0 0);
+  --code-token-punctuation: #8b9199;
+  --code-token-link: #8ec2f5;
+
+  color-scheme: dark;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --color-muted: var(--muted);
+  --color-surface: var(--surface);
+  --color-line: var(--line);
+  --font-sans: var(--font-instrument-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-
-    --code-foreground: #e6edf3;
-    --code-token-keyword: #ff7b72;
-    --code-token-string: #a5d6ff;
-    --code-token-string-expression: #a5d6ff;
-    --code-token-comment: #8b949e;
-    --code-token-constant: #79c0ff;
-    --code-token-function: #d2a8ff;
-    --code-token-parameter: #e6edf3;
-    --code-token-punctuation: #8b949e;
-    --code-token-link: #79c0ff;
-  }
+  --font-logo: var(--font-instrument-serif);
 }
 
 html {
@@ -56,7 +77,11 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-family: var(--font-instrument-sans), system-ui, sans-serif;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--foreground) 18%, transparent);
 }
 
 /* ── Site chrome ───────────────────────────────────────────────────────── */
@@ -78,6 +103,11 @@ body {
 
   .site-code code {
     font-family: inherit;
+  }
+
+  /* The site's own lines: the rails, the section rules and the grids. */
+  .site-lines {
+    --fb-line-color: var(--line);
   }
 
   /* The landing page's wall of previews: two copies of a column scroll up
@@ -104,5 +134,29 @@ body {
     .site-wall-column {
       animation: none;
     }
+  }
+
+  /* The command menu. cmdk marks its parts with attributes. */
+  [cmdk-group-heading] {
+    padding: 0.75rem 0.75rem 0.375rem;
+    font-family: var(--font-geist-mono), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    color: var(--muted);
+  }
+
+  [cmdk-item] {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 2.5rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  [cmdk-item][data-selected="true"] {
+    background: color-mix(in oklab, var(--foreground) 7%, transparent);
   }
 }

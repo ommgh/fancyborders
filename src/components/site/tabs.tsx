@@ -26,10 +26,10 @@ export function TabList<T extends string>({
           aria-selected={tab === value}
           onClick={() => onChange(tab)}
           className={cn(
-            "cursor-pointer px-2.5 py-1 text-sm transition-colors",
+            "cursor-pointer rounded-md px-2.5 py-1 text-sm transition-colors",
             tab === value
               ? "bg-foreground/10 text-foreground"
-              : "text-foreground/50 hover:text-foreground",
+              : "text-muted hover:text-foreground",
           )}
         >
           {tab}

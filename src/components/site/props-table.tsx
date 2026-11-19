@@ -3,10 +3,10 @@ import type { ApiTable } from "@/content/api";
 /** The props of one component, as a table. */
 export function PropsTable({ table }: { table: ApiTable }) {
   return (
-    <div className="overflow-x-auto border border-foreground/10">
+    <div className="overflow-x-auto rounded-xl border border-line bg-surface">
       <table className="w-full min-w-xl border-collapse text-left text-sm">
         <thead>
-          <tr className="border-b border-foreground/10 font-mono text-xs text-foreground/50">
+          <tr className="border-b border-line font-mono text-xs text-muted">
             <th className="px-4 py-2 font-normal">Prop</th>
             <th className="px-4 py-2 font-normal">Type</th>
             <th className="px-4 py-2 font-normal">Default</th>
@@ -16,7 +16,7 @@ export function PropsTable({ table }: { table: ApiTable }) {
           {table.props.map((prop) => (
             <tr
               key={prop.name}
-              className="border-b border-foreground/10 align-top last:border-0"
+              className="border-b border-line align-top last:border-0"
             >
               <td className="px-4 py-3 font-mono text-[0.8125rem] whitespace-nowrap">
                 {prop.name}
@@ -25,9 +25,9 @@ export function PropsTable({ table }: { table: ApiTable }) {
                 <code className="font-mono text-[0.8125rem] text-(--code-token-constant)">
                   {prop.type}
                 </code>
-                <p className="mt-1 text-foreground/60">{prop.description}</p>
+                <p className="mt-1 text-muted">{prop.description}</p>
               </td>
-              <td className="px-4 py-3 font-mono text-[0.8125rem] whitespace-nowrap text-foreground/60">
+              <td className="px-4 py-3 font-mono text-[0.8125rem] whitespace-nowrap text-muted">
                 {prop.default ?? "–"}
               </td>
             </tr>

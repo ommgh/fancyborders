@@ -46,12 +46,12 @@ export function CodeBlock({
   return (
     <div
       className={cn(
-        "border border-foreground/10 bg-foreground/[0.03]",
+        "overflow-hidden rounded-xl border border-line bg-surface",
         className,
       )}
     >
-      <div className="flex items-center justify-between border-b border-foreground/10 pr-1 pl-4">
-        <span className="truncate py-2 font-mono text-xs text-foreground/50">
+      <div className="flex items-center justify-between border-b border-line pr-1 pl-4">
+        <span className="truncate py-2 font-mono text-xs text-muted">
           {title ?? LABEL[lang]}
         </span>
         <CopyButton text={code} />

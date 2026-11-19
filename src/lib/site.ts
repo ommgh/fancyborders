@@ -3,7 +3,9 @@ export const SITE_NAME = "fancyborders";
 export const SITE_TAGLINE =
   "Borders, frames and enclosures for React and Tailwind.";
 
-export const GITHUB_URL = "https://github.com/ommgh/fancyborders";
+export const GITHUB_REPO = "ommgh/fancyborders";
+
+export const GITHUB_URL = `https://github.com/${GITHUB_REPO}`;
 
 const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL;
 
