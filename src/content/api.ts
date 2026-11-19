@@ -786,7 +786,7 @@ export const API: Record<string, ApiTable> = {
         type: '"dark" | "light" | "auto"',
         default: '"auto"',
         description:
-          "Which palette to use: the one tuned for dark surfaces or for light ones. auto follows the system colour scheme.",
+          "Which palette to use: the one tuned for dark surfaces or for light ones. auto follows the page's color-scheme (set by most theme switchers), and the system's when the page sets none.",
       },
       {
         name: "scale",

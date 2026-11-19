@@ -23,8 +23,8 @@
   .fb-gradient,
   .fb-glow,
   .fb-beam {
-    --_from: var(--fb-from, #38bdf8);
-    --_to: var(--fb-to, #e879f9);
+    --_from: var(--fb-from, #7e9be9);
+    --_to: var(--fb-to, #b593dc);
     /* Without a middle colour the gradient runs straight from one end to
        the other, which is what the midpoint of the two gives. */
     --_stops: var(

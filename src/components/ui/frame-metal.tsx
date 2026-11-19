@@ -429,14 +429,31 @@ function rgb(hex: string) {
 
 const DARK = "(prefers-color-scheme: dark)";
 
+/*
+ * The page's colour scheme: what a theme switcher has set with the
+ * color-scheme property on <html> (next-themes does this), or else the
+ * system's. Either can change, so both are watched.
+ */
 function subscribeScheme(notify: () => void) {
   const query = window.matchMedia(DARK);
   query.addEventListener("change", notify);
-  return () => query.removeEventListener("change", notify);
+  const observer = new MutationObserver(notify);
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["class", "style", "data-theme"],
+  });
+  return () => {
+    query.removeEventListener("change", notify);
+    observer.disconnect();
+  };
 }
 
-const systemScheme = (): Scheme =>
-  window.matchMedia(DARK).matches ? "dark" : "light";
+const systemScheme = (): Scheme => {
+  const declared = getComputedStyle(document.documentElement).colorScheme;
+  if (declared === "dark" || declared === "only dark") return "dark";
+  if (declared === "light" || declared === "only light") return "light";
+  return window.matchMedia(DARK).matches ? "dark" : "light";
+};
 
 const serverScheme = (): Scheme => "dark";
 
@@ -446,7 +463,8 @@ export type FrameMetalProps = LayerProps & {
   preset?: MetalPreset;
   /**
    * Which palette to use: the one tuned for dark surfaces or for light
-   * ones. `auto` follows the system colour scheme.
+   * ones. `auto` follows the page's color-scheme, and the system's when
+   * the page sets none.
    */
   theme?: Scheme | "auto";
   /** Size of the pattern. 2 doubles it, 0.5 halves it. */

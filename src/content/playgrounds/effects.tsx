@@ -10,11 +10,17 @@ import { definePlayground, el, importing, snippet } from "./define";
 const FRAME = "@/components/ui/frame";
 const EFFECTS = "@/components/ui/frame-effects";
 
-/** The palette the effect layers fall back to. */
-const FROM = "#38bdf8";
-const TO = "#e879f9";
+/** The palette the effect layers fall back to: periwinkle into lilac. */
+const FROM = "#7e9be9";
+const TO = "#b593dc";
 
-const muted = "mt-1 font-mono text-sm text-neutral-400";
+/*
+ * The previews sit on the page's own surface in either theme. The colours
+ * are mid-tones, light enough to glow on dark and deep enough to read on
+ * light.
+ */
+const card = "bg-surface shadow-[0_1px_2px_rgb(0_0_0/0.04)]";
+const muted = "mt-1 font-mono text-sm text-muted";
 
 export const beam = definePlayground({
   defaults: {
@@ -23,8 +29,8 @@ export const beam = definePlayground({
     count: 1,
     reverse: false,
     radius: 14,
-    from: FROM,
-    to: TO,
+    from: "#679dd4",
+    to: "#8673d9",
   },
   controls: {
     size: { type: "range", label: "Length", min: 40, max: 280, step: 10, unit: "px" },
@@ -43,7 +49,7 @@ export const beam = definePlayground({
       reverse={v.reverse}
       radius={v.radius}
       colors={[v.from, v.to]}
-      className="w-full max-w-xs bg-neutral-900/60 p-6"
+      className={`w-full max-w-xs p-6 ${card}`}
     >
       <p className="font-medium">Deploying to production</p>
       <p className={muted}>step 4 of 6 · 38s</p>
@@ -75,9 +81,9 @@ export const glow = definePlayground({
     blur: 10,
     spread: 14,
     radius: 14,
-    from: "#22d3ee",
-    via: "#818cf8",
-    to: "#fb7185",
+    from: "#7e9be9",
+    via: "#b593dc",
+    to: "#e4a5a4",
   },
   controls: {
     blur: { type: "range", label: "Blur", min: 2, max: 30, unit: "px" },
@@ -97,7 +103,7 @@ export const glow = definePlayground({
       spread={v.spread}
       radius={v.radius}
       colors={[v.from, v.via, v.to]}
-      className="w-full max-w-xs bg-neutral-950 p-6"
+      className={`w-full max-w-xs p-6 ${card}`}
     >
       <p className="font-medium">Pro plan</p>
       <p className={muted}>Everything, unlimited</p>
@@ -127,8 +133,8 @@ export const gradient = definePlayground({
     angle: 90,
     line: 2,
     radius: 12,
-    from: "#fcd34d",
-    to: "#f43f5e",
+    from: "#ccac7b",
+    to: "#c1727c",
     spin: false,
     duration: 4,
   },
@@ -142,7 +148,7 @@ export const gradient = definePlayground({
     duration: { type: "range", label: "Turn time", min: 1, max: 10, step: 0.5, unit: "s" },
   },
   render: (v) => (
-    <Frame radius={v.radius} line={v.line} className="w-full max-w-xs p-6">
+    <Frame radius={v.radius} line={v.line} className={`w-full max-w-xs p-6 ${card}`}>
       <FrameGradient
         colors={[v.from, v.to]}
         angle={v.angle}
@@ -175,7 +181,7 @@ export const gradient = definePlayground({
 });
 
 export const pulse = definePlayground({
-  defaults: { speed: 2.4, blur: 8, spread: 10, from: "#f43f5e", to: "#fb923c" },
+  defaults: { speed: 2.4, blur: 8, spread: 10, from: "#d86258", to: "#e3a072" },
   controls: {
     speed: { type: "range", label: "Breath time", min: 0.6, max: 5, step: 0.2, unit: "s" },
     blur: { type: "range", label: "Blur", min: 2, max: 24, unit: "px" },
@@ -184,7 +190,7 @@ export const pulse = definePlayground({
     to: { type: "color", label: "To" },
   },
   render: (v) => (
-    <Frame radius={999} className="bg-neutral-950 px-5 py-2.5">
+    <Frame radius={999} className={`px-5 py-2.5 ${card}`}>
       <FrameGlow
         colors={[v.from, v.to]}
         pulse={v.speed}
@@ -225,11 +231,17 @@ export const pulse = definePlayground({
 const CELLS = ["A1", "A2", "A3", "B1", "B2", "B3"];
 
 export const spotlight = definePlayground({
-  defaults: { size: 140, wash: true, radius: 10, color: "#ffffff" },
+  defaults: { size: 140, wash: true, radius: 10, color: "currentColor" },
   controls: {
     size: { type: "range", label: "Light radius", min: 60, max: 400, step: 10, unit: "px" },
     radius: { type: "range", label: "Radius", min: 0, max: 24, unit: "px" },
-    color: { type: "color", label: "Colour" },
+    // The text colour by default, so the light is ink on a light page and
+    // light on a dark one.
+    color: {
+      type: "select",
+      label: "Colour",
+      options: ["currentColor", "#7e9be9", "#ccac7b"],
+    },
     wash: { type: "toggle", label: "Wash the surface" },
   },
   render: (v) => (
@@ -238,7 +250,7 @@ export const spotlight = definePlayground({
         <Frame key={cell} radius={v.radius} className="p-4">
           <FrameBorder />
           <FrameSpotlight size={v.size} wash={v.wash} colors={[v.color]} />
-          <p className="font-mono text-sm text-neutral-400">{cell}</p>
+          <p className="font-mono text-sm text-muted">{cell}</p>
         </Frame>
       ))}
     </div>
@@ -257,7 +269,7 @@ export const spotlight = definePlayground({
         ],
         el("FrameBorder"),
         el("FrameSpotlight", [
-          ["colors", [v.color], ["#ffffff"]],
+          ["colors", v.color === "currentColor" ? undefined : [v.color]],
           ["size", v.size, 220],
           ["wash", v.wash, false],
         ]),
@@ -274,8 +286,10 @@ export const liquidMetal = definePlayground<{
   speed: number;
   paused: boolean;
 }>({
+  // Silver for the showcase: the quietest finish. Chromatic stays the
+  // component's own default.
   defaults: {
-    preset: "chromatic",
+    preset: "silver",
     line: 2,
     radius: 24,
     scale: 1,
@@ -298,11 +312,10 @@ export const liquidMetal = definePlayground<{
     <Frame
       radius={v.radius}
       line={v.line}
-      className="bg-neutral-900 px-7 py-3"
+      className={`px-7 py-3 ${card}`}
     >
       <FrameMetal
         preset={v.preset}
-        theme="dark"
         scale={v.scale}
         speed={v.speed}
         paused={v.paused}

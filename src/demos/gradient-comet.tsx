@@ -5,7 +5,7 @@ export default function GradientComet() {
   return (
     <Frame
       line={2}
-      className="w-full max-w-xs p-6 frame-from-emerald-400 frame-via-emerald-400/0 frame-to-emerald-400/0"
+      className="w-full max-w-xs p-6 frame-from-indigo-400 frame-via-indigo-400/0 frame-to-indigo-400/0"
     >
       <FrameBorder className="opacity-40" />
       <FrameGradient spin={3} />

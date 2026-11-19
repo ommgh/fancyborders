@@ -306,7 +306,6 @@ export const COMPONENTS: ComponentDoc[] = [
         title: "With effects",
         description:
           "A gradient and a glow inside an edge frame take its outline.",
-        stage: "dark",
       },
     ],
     api: ["EdgeFrame"],
@@ -375,7 +374,6 @@ export const COMPONENTS: ComponentDoc[] = [
       "A light that travels the border at a steady speed, around any proportions and any corner.",
     category: "effects",
     item: "beam-frame",
-    stage: "dark",
     notes: [
       "BeamFrame is a preset: a Frame with a FrameBorder and a FrameBeam. Use the FrameBeam layer directly, from frame-effects, to add a beam to any frame.",
       "The beam follows the outline with offset-path, which needs Chromium 116, Firefox 122 or Safari 18. Without it nothing is drawn and the plain border remains.",
@@ -385,14 +383,12 @@ export const COMPONENTS: ComponentDoc[] = [
         demo: "beam-shape",
         title: "On a shape",
         description: "Inside a shape frame the beam follows the shape's outline.",
-        stage: "dark",
       },
       {
         demo: "beam-utilities",
         title: "Coloured by utilities",
         description:
           "Leave out the colours and the beam reads frame-from-* and frame-to-* from the frame.",
-        stage: "dark",
       },
     ],
     api: ["BeamFrame", "FrameBeam"],
@@ -404,7 +400,6 @@ export const COMPONENTS: ComponentDoc[] = [
       "A gradient border with a halo of the same colours glowing behind it, still or turning.",
     category: "effects",
     item: "glow-frame",
-    stage: "dark",
     notes: [
       "GlowFrame is a preset: a Frame with a FrameGlow and a FrameGradient that share their colours. Both layers come from frame-effects.",
       "The halo is painted behind the frame's content but in front of the frame's own background.",
@@ -415,7 +410,6 @@ export const COMPONENTS: ComponentDoc[] = [
         title: "On a shape",
         description:
           "Inside a shape frame the halo is the whole shape blurred behind it, so give the shape a fill.",
-        stage: "dark",
       },
     ],
     api: ["GlowFrame", "FrameGlow"],
@@ -427,21 +421,18 @@ export const COMPONENTS: ComponentDoc[] = [
       "A gradient drawn on the frame's line, in any colours and at any angle, optionally turning around the frame.",
     category: "effects",
     item: "frame-effects",
-    stage: "dark",
     examples: [
       {
         demo: "gradient-utilities",
         title: "Coloured by utilities",
         description:
           "frame-from-*, frame-via-* and frame-to-* on the frame colour every effect layer inside it.",
-        stage: "dark",
       },
       {
         demo: "gradient-comet",
         title: "A turning comet",
         description:
           "Fade the gradient to transparent and spin it for a light that sweeps the border.",
-        stage: "dark",
       },
     ],
     api: ["FrameGradient"],
@@ -454,7 +445,6 @@ export const COMPONENTS: ComponentDoc[] = [
     category: "effects",
     item: "frame-effects",
     recipe: true,
-    stage: "dark",
     notes: ["The halo holds still for people who ask for reduced motion."],
     api: ["FrameGlow", "FrameGradient"],
   },
@@ -465,7 +455,6 @@ export const COMPONENTS: ComponentDoc[] = [
       "Borders that light up near the pointer, across every frame on the page at once.",
     category: "effects",
     item: "frame-spotlight",
-    stage: "dark",
     notes: [
       "Every spotlight on the page shares one pointer listener, and updates at most once a frame.",
       "This is a client component. Put it over a faint FrameBorder so the frame keeps an edge where the light does not reach.",
@@ -479,7 +468,6 @@ export const COMPONENTS: ComponentDoc[] = [
       "A moving metal ring drawn with WebGL, in chromatic, silver and gold.",
     category: "effects",
     item: "frame-metal",
-    stage: "dark",
     notes: [
       "Every metal layer on the page shares one WebGL context and one animation loop, and layers scrolled out of view are skipped.",
       "The metal is laid over the frame's ordinary line colour and is see-through where it has nothing to add, so the frame keeps a continuous edge. Without WebGL that plain line is all there is.",

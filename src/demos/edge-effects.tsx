@@ -8,13 +8,13 @@ export default function EdgeEffects() {
       sides={["top", "right", "bottom", "left"]}
       size={18}
       line={2}
-      fill="var(--color-neutral-950)"
-      className="w-full max-w-xs p-8 frame-from-amber-300 frame-to-rose-500"
+      fill="var(--card)"
+      className="w-full max-w-xs p-8 frame-from-amber-300 frame-to-rose-400"
     >
       <FrameGlow />
       <FrameGradient spin />
       <p className="font-medium">Limited edition</p>
-      <p className="mt-1 text-sm text-neutral-400">A gradient on a scalloped edge.</p>
+      <p className="mt-1 text-sm text-muted">A gradient on a scalloped edge.</p>
     </EdgeFrame>
   );
 }

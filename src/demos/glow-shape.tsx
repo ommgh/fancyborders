@@ -7,8 +7,8 @@ export default function GlowShape() {
       corner="bevel"
       corners={["tl", "br"]}
       size={16}
-      fill="var(--color-neutral-950)"
-      className="w-full max-w-xs p-6 frame-from-cyan-300 frame-to-violet-500"
+      fill="var(--card)"
+      className="w-full max-w-xs p-6 frame-from-indigo-300 frame-to-violet-400"
     >
       <FrameGlow />
       <FrameGradient />
